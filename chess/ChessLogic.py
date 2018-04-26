@@ -98,45 +98,51 @@ class Board():
     def __str__(self):
         return str(self.board)
     
-    def check_legal(action, player, pos):
+    def check_legal(self, action, player, pos):
         '''
         Checks if an action is legal.
         '''
         new_pos = [pos[0] + action[0], pos[1] + action[1]]
-        if board[new_pos[0], new_pos[1]] == None:
+        if (new_pos[0] < 0 or new_pos[0] > 7 or new_pos[1] < 0 or new_pos[1] > 7): 
+            return False
+                
+        if self.board[new_pos[0], new_pos[1]] == None:
             return True
         
-        piece = board[new_pos[0], new_pos[1]]
-        if piece.player = player:
+        cur_piece = self.board[new_pos[0], new_pos[1]]
+        if cur_piece.player == player:
             return False
         else: 
             return True
     
-    def check_legal_pawn(action, player, pos):
+    def check_legal_pawn(self, action, player, pos):
         '''
         Checks if an action is legal for pawn pieces.
         '''
         new_pos = [pos[0] + action[0], pos[1] + action[1]]
+        if (new_pos[0] < 0 or new_pos[0] > 7 or new_pos[1] < 0 or new_pos[1] > 7): 
+            return False
+ 
         if action == (0,2):
             if pos[1] != 1:
                 return False
             
-            if board[new_pos[0], new_pos[1]-1] != None or board[new_pos[0], new_pos[1]] != None:
+            if self.board[new_pos[0], new_pos[1]-1] != None or self.board[new_pos[0], new_pos[1]] != None:
                 return False
 
             return True
         
         elif action == (0,1):
-            if board[new_pos[0], new_pos[1]] != None:
+            if self.board[new_pos[0], new_pos[1]] != None:
                 return False
             else:
                 return True
         
         # Action to capture an opponent piece
         elif action == (-1,1) or action == (1,1):
-            piece = board[new_pos[0], new_pos[1]]
-            if piece == None:
-                other_piece = board[new_pos[0], new_pos[1]-1]
+            cur_piece = self.board[new_pos[0], new_pos[1]]
+            if cur_piece == None:
+                other_piece = self.board[new_pos[0], new_pos[1]-1]
                 if other_piece == None:
                     return False
                 else:
@@ -145,37 +151,65 @@ class Board():
                             return True
                         else:
                             return False
-            elif piece.player == player:
+            elif cur_piece.player == player:
                 return False
-       
-       return False
+        
+        return False
 
-    def get_legal_actions_piece(self, piece):
+    def get_legal_actions_piece(self, cur_piece):
         '''
-        Returns all the legal actions for the given piece.
+        Returns a list of all the legal actions for the given piece.
         (1 for white piece, -1 for black piece)
         '''
        
-        legal_actions = set()
+        legal_actions = []
+        legal_actions.append(cur_piece)
         
         # Different action behaviour for pawns, so must be handled separately
-        if type(piece) == piece.Pawn:
-            for action in piece.actions:
-                if check_legal_pawn(action, piece.player):
-                    legal_actions.append((piece, action))
+        if isinstance(cur_piece, piece.Pawn):
+            for action in cur_piece.actions:
+                if self.check_legal_pawn(action, cur_piece.player, cur_piece.pos):
+                    legal_actions.append(action)
         else:
-            for action in piece.actions:
-                for speed in piece.speed:
+            for action in cur_piece.actions:
+                for speed in cur_piece.speed:
                     cur_action = [action[0]*speed, action[1]*speed]
-                    if check_legal(cur_action, piece.player):
-                        legal_actions.append((piece, cur_action))
+                    if self.check_legal(cur_action, cur_piece.player, cur_piece.pos):
+                        legal_actions.append(cur_action)
                     else:
                         break
+        return legal_actions
+
+    def get_legal_actions(self, player):
+        '''
+        Returns a list of all legal actions
+        '''
+        legal_actions = []
+        if player == 1:
+            pieces = self.pieces["w_pieces"]
+        else:
+            pieces = self.pieces["b_pieces"]
+        
+        for key in pieces:
+            legal_actions.append(self.get_legal_actions_piece(pieces[key]))
+
+        return legal_actions
+
+    def execute_action(self, action):
+        '''
+        Executes an action on the board
+        '''
+        cur_piece = action[0]
+        action = action[1]
+
+        cur_pos = cur_piece.pos
+        new_pos = [cur_pos[0] + action[0], cur_pos[1] + action[1]]
+        self.board[new_pos[0], new_pos[1]] = cur_piece
+        self.board[cur_pos[0], cur_pos[1]] = None
+
+
 if __name__=="__main__":
-    b_K = piece.King((4,0), -1)
-    a = np.array([b_K])
-    print(a[0])
     board = Board(8)
     print(board)
-    #print(board[0])
-    print(board[0,1])
+    legal_actions = board.get_legal_actions(1)
+    print(legal_actions)
