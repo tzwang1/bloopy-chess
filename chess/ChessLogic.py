@@ -97,6 +97,80 @@ class Board():
     
     def __str__(self):
         return str(self.board)
+    
+    def check_legal(action, player, pos):
+        '''
+        Checks if an action is legal.
+        '''
+        new_pos = [pos[0] + action[0], pos[1] + action[1]]
+        if board[new_pos[0], new_pos[1]] == None:
+            return True
+        
+        piece = board[new_pos[0], new_pos[1]]
+        if piece.player = player:
+            return False
+        else: 
+            return True
+    
+    def check_legal_pawn(action, player, pos):
+        '''
+        Checks if an action is legal for pawn pieces.
+        '''
+        new_pos = [pos[0] + action[0], pos[1] + action[1]]
+        if action == (0,2):
+            if pos[1] != 1:
+                return False
+            
+            if board[new_pos[0], new_pos[1]-1] != None or board[new_pos[0], new_pos[1]] != None:
+                return False
+
+            return True
+        
+        elif action == (0,1):
+            if board[new_pos[0], new_pos[1]] != None:
+                return False
+            else:
+                return True
+        
+        # Action to capture an opponent piece
+        elif action == (-1,1) or action == (1,1):
+            piece = board[new_pos[0], new_pos[1]]
+            if piece == None:
+                other_piece = board[new_pos[0], new_pos[1]-1]
+                if other_piece == None:
+                    return False
+                else:
+                    if other_piece.player != player and type(other_piece) == piece.Pawn:
+                        if other_piece.enpassant:
+                            return True
+                        else:
+                            return False
+            elif piece.player == player:
+                return False
+       
+       return False
+
+    def get_legal_actions_piece(self, piece):
+        '''
+        Returns all the legal actions for the given piece.
+        (1 for white piece, -1 for black piece)
+        '''
+       
+        legal_actions = set()
+        
+        # Different action behaviour for pawns, so must be handled separately
+        if type(piece) == piece.Pawn:
+            for action in piece.actions:
+                if check_legal_pawn(action, piece.player):
+                    legal_actions.append((piece, action))
+        else:
+            for action in piece.actions:
+                for speed in piece.speed:
+                    cur_action = [action[0]*speed, action[1]*speed]
+                    if check_legal(cur_action, piece.player):
+                        legal_actions.append((piece, cur_action))
+                    else:
+                        break
 if __name__=="__main__":
     b_K = piece.King((4,0), -1)
     a = np.array([b_K])

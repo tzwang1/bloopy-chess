@@ -20,6 +20,7 @@ class King(Piece):
         super().__init__(name, pos, player)
         self.actions = [(1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1, 1), (0,1), (1,1)]
         self.speed = [1]
+        self.has_moved = False
 
 class Queen(Piece):
     def __init__(self, pos, player, name="Queen"):
@@ -32,6 +33,7 @@ class Rook(Piece):
         super().__init__(name, pos, player)
         self.actions = [(1,0), (0,-1), (-1,0), (0,1)]
         self.speed = [1,2,3,4,5,6,7,8]
+        self.has_moved = False
 
 class Bishop(Piece):
     def __init__(self, pos, player, name="Bishop"):
@@ -48,6 +50,6 @@ class Knight(Piece):
 class Pawn(Piece):
     def __init__(self, pos, player, name="Pawn"):
         super().__init__(name, pos, player)
-        self.actions = [(-1,1), (1,1), (0,1)]
+        self.actions = [(-1,1), (1,1), (0,1), (0,2)]
         self.speed = [1]
-
+        self.enpassant = False
