@@ -17,4 +17,8 @@ class Game():
         if player != self.cur_player:
             print("Incorrect player!")
 
+        self.board.execute_action(action)
+        self.cur_player *= -1
+        
+
     

@@ -191,8 +191,10 @@ class Board():
             pieces = self.pieces["b_pieces"]
         
         for key in pieces:
-            legal_actions.append(self.get_legal_actions_piece(pieces[key]))
-
+            actions = self.get_legal_actions_piece(pieces[key])
+            if len(actions) > 1:
+                legal_actions.append(actions)
+            
         return legal_actions
 
     def execute_action(self, action):
@@ -201,15 +203,51 @@ class Board():
         '''
         cur_piece = action[0]
         action = action[1]
-
+        
+        if isinstance(cur_piece, piece.King) or isinstance(cur_piece, piece.Rook):
+            cur_piece.has_moved = True
         cur_pos = cur_piece.pos
         new_pos = [cur_pos[0] + action[0], cur_pos[1] + action[1]]
         self.board[new_pos[0], new_pos[1]] = cur_piece
         self.board[cur_pos[0], cur_pos[1]] = None
 
+    def king_in_check(self, cur_player):
+        '''
+        Checks if the King is currently in check
+        '''
+        other_player = cur_player*-1
+        if cur_player == 1:
+            pieces = self.pieces["w_pieces"]
+        else:
+            pieces = self.pieces["b_pieces"]
 
+        for cur_piece in pieces:
+            if isinstance(cur_piece, piece.King):
+                king_pos = cur_piece.pos
+       
+        legal_actions = self.get_legal_actions(other_player)
+        import pdb; pdb.set_trace() 
+        for action in legal_actions:
+            cur_piece = action[0]
+            moves = action[1]
+            for move in moves:
+                new_pos = [cur_piece.pos[0] + move[0], cur_piece.pos[1] + move[1]]
+                if new_pos == king_pos:
+                    return True
+        return False
 if __name__=="__main__":
     board = Board(8)
     print(board)
     legal_actions = board.get_legal_actions(1)
     print(legal_actions)
+    action = legal_actions[0]
+    print(type(action[0]))
+    board.execute_action(action)
+    print(board)
+    check_pos = [0,5]
+    King = board.pieces["w_pieces"]["w_K"]
+    action = [King, [0,5]]
+    board.execute_action(action)
+    print(board)
+    print(board.king_in_check(1))
+

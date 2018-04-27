@@ -21,6 +21,7 @@ class King(Piece):
         self.actions = [(1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1, 1), (0,1), (1,1)]
         self.speed = [1]
         self.has_moved = False
+        self.in_check = False
 
 class Queen(Piece):
     def __init__(self, pos, player, name="Queen"):
