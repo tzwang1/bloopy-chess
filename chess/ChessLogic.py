@@ -102,7 +102,7 @@ class Board():
         '''
         Checks if an action is legal.
         '''
-        new_pos = [pos[0] + action[0], pos[1] + action[1]]
+        new_pos = (pos[0] + action[0], pos[1] + action[1])
         if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1): 
             return False
                 
@@ -119,7 +119,7 @@ class Board():
         '''
         Checks if an action is legal for pawn pieces.
         '''
-        new_pos = [pos[0] + action[0], pos[1] + action[1]]
+        new_pos = (pos[0] + action[0], pos[1] + action[1])
         if (new_pos[0] < 0 or new_pos[0] > 7 or new_pos[1] < 0 or new_pos[1] > 7): 
             return False
  
@@ -208,9 +208,10 @@ class Board():
         if isinstance(cur_piece, piece.King) or isinstance(cur_piece, piece.Rook):
             cur_piece.has_moved = True
         cur_pos = cur_piece.pos
-        new_pos = [cur_pos[0] + action[0], cur_pos[1] + action[1]]
+        new_pos = (cur_pos[0] + action[0], cur_pos[1] + action[1])
         self.board[new_pos[0], new_pos[1]] = cur_piece
         self.board[cur_pos[0], cur_pos[1]] = None
+        cur_piece.pos = new_pos
 
     def king_in_check(self, cur_player):
         '''
@@ -222,17 +223,20 @@ class Board():
         else:
             pieces = self.pieces["b_pieces"]
 
-        for cur_piece in pieces:
-            if isinstance(cur_piece, piece.King):
-                king_pos = cur_piece.pos
-       
+        cur_piece = pieces["w_K"]
+        if not isinstance(cur_piece, piece.King):
+            print("Error, piece is not a King")
+            return
+
+        king_pos = cur_piece.pos
+
         legal_actions = self.get_legal_actions(other_player)
-        import pdb; pdb.set_trace() 
+        #import pdb; pdb.set_trace() 
         for action in legal_actions:
             cur_piece = action[0]
             moves = action[1]
             for move in moves:
-                new_pos = [cur_piece.pos[0] + move[0], cur_piece.pos[1] + move[1]]
+                new_pos = (cur_piece.pos[0] + move[0], cur_piece.pos[1] + move[1])
                 if new_pos == king_pos:
                     return True
         return False
