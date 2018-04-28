@@ -155,7 +155,41 @@ class Board():
                 return True
         
         return False
+ 
+     def check_legal_king(self, action, player, pos):
+        '''
+        Checks if an action is legal for king pieces.
+        '''
+        new_pos = (pos[0] + action[0], pos[1] + action[1])
+        if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1):
+            return False
 
+        if player == 1:
+            king = self.pieces["w_pieces"]["w_K"]
+        else:
+            king = self.pieces["b_pieces"]["b_K"]
+
+        if self.board[new_pos[0], new_pos[1]] == None:
+            self.board[new_pos[0], new_pos[1]] = king
+
+            if self.king_in_check():
+                self.board[new_pos[0], new_pos[1]] = None
+                return False
+            else:
+                return True
+
+        cur_piece = self.board[new_pos[0], new_pos[1]]
+        if cur_piece.player == player:
+            return False
+        else:
+            self.board[new_pos[0], new_pos[1]] = king
+
+            if self.king_in_check():
+                self.board[new_pos[0], new_pos[1]] = cur_piece
+                return False
+            else:
+                return True
+  
     def get_legal_actions_piece(self, cur_piece):
         '''
         Returns a list of all the legal actions for the given piece.
@@ -169,6 +203,10 @@ class Board():
         if isinstance(cur_piece, piece.Pawn):
             for action in cur_piece.actions:
                 if self.check_legal_pawn(action, cur_piece.player, cur_piece.pos):
+                    all_actions.append(action)
+        elif isinstance(cur_piece, piece.King):
+            for action in cur_piece.actions:
+                if self.check_legal_king(action, cur_piece.player, cur_piece.pos):
                     all_actions.append(action)
         else:
             for action in cur_piece.actions:
@@ -262,6 +300,22 @@ class Board():
                 if new_pos == king_pos:
                     return True
         return False
+
+    def king_in_checkmate(self, cur_player):
+        if not self.king_in_check(cur_player):
+            return False
+        
+        if cur_player == 1:
+            king = self.pieces["w_pieces"]["w_K"]
+        else:
+            king = self.pieces["b_pieces"]["b_K"]
+       
+        actions = self.get_legal_action_piece(king)
+        if len(actions[1]) == 0:
+            return True
+        else:
+            return False
+            
 if __name__=="__main__":
     board = Board(8)
     check_pos = [0,5]
