@@ -17,7 +17,7 @@ first dim is column, 2nd is row:
     piece[1][7] is the square in column 2
     at the opposite end of the board in row 8
 '''
-def initializePieces():
+def initialize_pieces():
     all_pieces = {}
     w_pieces = {}
     b_pieces = {}
@@ -63,7 +63,7 @@ def initializePieces():
 
     return all_pieces
 
-def initializeBoard(all_pieces, n):
+def initialize_board(all_pieces, n):
     
     w_pieces = all_pieces["w_pieces"]
     b_pieces = all_pieces["b_pieces"]
@@ -86,10 +86,10 @@ class Board():
         Set up initial board configuration.
         '''
         self.n = n
-        self.pieces = initializePieces()
+        self.pieces = initialize_pieces()
 
         # Adding pieces to the board (always starts from perspective of white player
-        self.board = initializeBoard(self.pieces, n)
+        self.board = initialize_board(self.pieces, n)
  
     def __getitem__(self, pos):
         x, y = pos
@@ -146,13 +146,13 @@ class Board():
                 if other_piece == None:
                     return False
                 else:
-                    if other_piece.player != player and type(other_piece) == piece.Pawn:
+                    if other_piece.player != player and isinstance(other_piece, piece.Pawn):
                         if other_piece.enpassant:
                             return True
                         else:
                             return False
-            elif cur_piece.player == player:
-                return False
+            elif cur_piece.player != player:
+                return True
         
         return False
 
@@ -190,12 +190,10 @@ class Board():
             pieces = self.pieces["w_pieces"]
         else:
             pieces = self.pieces["b_pieces"]
-        
         for key in pieces:
             actions = self.get_legal_actions_piece(pieces[key])
-            if len(actions) > 1:
+            if len(actions[1]) > 0:
                 legal_actions.append(actions)
-            
         return legal_actions
 
     def execute_action(self, action):
@@ -212,7 +210,33 @@ class Board():
         self.board[new_pos[0], new_pos[1]] = cur_piece
         self.board[cur_pos[0], cur_pos[1]] = None
         cur_piece.pos = new_pos
+    
+    def switch_orientation(self):
+        '''
+        Switches the orientation of the board, so it is in the perspective of the person
+        whose turn it is.
+        '''
+        all_pieces = self.pieces
+        w_pieces = all_pieces["w_pieces"]
+        b_pieces = all_pieces["b_pieces"]
 
+        for key in w_pieces:
+            cur_piece = w_pieces[key]
+            cur_pos = cur_piece.pos
+            #Switch piece from one side to the other
+            new_pos = (cur_pos[0], self.n-1 - cur_pos[1])
+            cur_piece.pos = new_pos
+
+        for key in b_pieces:
+            cur_piece = b_pieces[key]
+            cur_pos = cur_piece.pos
+            #switch piece from one side to the other
+            new_pos = (cur_pos[0], self.n-1 - cur_pos[1])
+            cur_piece.pos = new_pos
+
+        self.board = initialize_board(all_pieces, self.n)
+
+        
     def king_in_check(self, cur_player):
         '''
         Checks if the King is currently in check
@@ -229,9 +253,7 @@ class Board():
             return
 
         king_pos = cur_piece.pos
-
         legal_actions = self.get_legal_actions(other_player)
-        #import pdb; pdb.set_trace() 
         for action in legal_actions:
             cur_piece = action[0]
             moves = action[1]
@@ -242,17 +264,12 @@ class Board():
         return False
 if __name__=="__main__":
     board = Board(8)
-    print(board)
-    legal_actions = board.get_legal_actions(1)
-    print(legal_actions)
-    action = legal_actions[0]
-    print(type(action[0]))
-    board.execute_action(action)
-    print(board)
     check_pos = [0,5]
     King = board.pieces["w_pieces"]["w_K"]
     action = [King, [0,5]]
     board.execute_action(action)
+    print(board)
+    board.switch_orientation()
     print(board)
     print(board.king_in_check(1))
 

@@ -33,6 +33,17 @@ def test_execute_action():
     board.execute_action([w_P_0, action])
     assert w_P_0.pos == (0, 3)
 
+def test_switch_orientation():
+    board = logic.Board(8)
+    w_P_0 = board.pieces["w_pieces"]["w_P_0"]
+    
+    cur_pos = w_P_0.pos
+    assert cur_pos == (0,1)
+    board.switch_orientation()
+    
+    cur_pos = w_P_0.pos
+    assert cur_pos == (0,6)
+
 def test_check_legal():
     # Creating pieces, and a toy board of size 4x4
     n = 4
@@ -44,7 +55,7 @@ def test_check_legal():
     all_pieces["w_pieces"] = w_pieces
     all_pieces["b_pieces"] = b_pieces 
 
-    board = logic.initializeBoard(all_pieces, n)
+    board = logic.initialize_board(all_pieces, n)
     test_board = logic.Board(8)
     test_board.pieces = all_pieces
     test_board.board = board
@@ -63,7 +74,7 @@ def test_check_legal_Pawn():
     all_pieces["w_pieces"] = w_pieces
     all_pieces["b_pieces"] = b_pieces
 
-    board = logic.initializeBoard(all_pieces, n)
+    board = logic.initialize_board(all_pieces, n)
     test_board = logic.Board(8)
     test_board.pieces = all_pieces
     test_board.board = board
@@ -83,7 +94,7 @@ def test_king_in_check():
     all_pieces["w_pieces"] = w_pieces
     all_pieces["b_pieces"] = b_pieces
     
-    board = logic.initializeBoard(all_pieces, n)
+    board = logic.initialize_board(all_pieces, n)
     test_board = logic.Board(8)
     test_board.pieces = all_pieces
     test_board.board = board
@@ -102,6 +113,8 @@ if __name__=="__main__":
     test_chessGame()
     print("\tRunning unit test for execute_action")
     test_execute_action()
+    print("\tRunning unit tests for switch_orientation")
+    test_switch_orientation()
     print("\tRunning unit test for check_legal")
     test_check_legal()
     print("\tRunning unit test for check_legal_Pawn")
@@ -109,4 +122,4 @@ if __name__=="__main__":
     print("\tRunning unit test for king_in_check")
     test_king_in_check()
     print("Passed tests for ChessGame.py")
-    print("#" * 80)
+
