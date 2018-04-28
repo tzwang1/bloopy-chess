@@ -110,4 +110,3 @@ if __name__=="__main__":
     test_king_in_check()
     print("Passed tests for ChessGame.py")
     print("#" * 80)
-    print('dsf")
