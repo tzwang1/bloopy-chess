@@ -103,7 +103,7 @@ class Board():
         Checks if an action is legal.
         '''
         new_pos = [pos[0] + action[0], pos[1] + action[1]]
-        if (new_pos[0] < 0 or new_pos[0] > 7 or new_pos[1] < 0 or new_pos[1] > 7): 
+        if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1): 
             return False
                 
         if self.board[new_pos[0], new_pos[1]] == None:
@@ -164,20 +164,21 @@ class Board():
        
         legal_actions = []
         legal_actions.append(cur_piece)
-        
+        all_actions = []        
         # Different action behaviour for pawns, so must be handled separately
         if isinstance(cur_piece, piece.Pawn):
             for action in cur_piece.actions:
                 if self.check_legal_pawn(action, cur_piece.player, cur_piece.pos):
-                    legal_actions.append(action)
+                    all_actions.append(action)
         else:
             for action in cur_piece.actions:
                 for speed in cur_piece.speed:
                     cur_action = [action[0]*speed, action[1]*speed]
                     if self.check_legal(cur_action, cur_piece.player, cur_piece.pos):
-                        legal_actions.append(cur_action)
+                        all_actions.append(cur_action)
                     else:
                         break
+        legal_actions.append(all_actions)
         return legal_actions
 
     def get_legal_actions(self, player):

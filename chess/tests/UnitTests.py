@@ -28,20 +28,24 @@ assert isinstance(board.board[1,0], piece.Knight) == True
 assert isinstance(board.board[0,0], piece.Rook) == True
 assert board.board[5,5] == None
 
-print("\tRunning unit tests for check_legal type functions")
+print("\tRunning unit tests for check_legal action type functions")
 # Creating pieces, and a toy board of size 4x4
+n = 4
 all_pieces = {}
 w_pieces = {}
 b_pieces = {}
-w_pieces["w_K"] = piece.King((1,1), 1)
-b_pieces["b_K"] = piece.King((3,1), -1)
+w_pieces["w_Q"] = piece.Queen((1,1), 1)
+b_pieces["b_Q"] = piece.Queen((3,1), -1)
 all_pieces["w_pieces"] = w_pieces
 all_pieces["b_pieces"] = b_pieces 
 
-board = logic.initializeBoard(all_pieces, 4)
+board = logic.initializeBoard(all_pieces, n)
 test_board = logic.Board(8)
 test_board.pieces = all_pieces
 test_board.board = board
+test_board.n = n
 legal_actions = test_board.get_legal_actions(1)
-print(test_board)
-print(legal_actions)
+
+assert legal_actions[0][1] == [[1, 0], [2, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [0, 2], [1, 1], [2, 2]]
+
+
