@@ -83,6 +83,26 @@ def test_check_legal_Pawn():
     
     assert legal_actions[0][1] == [(0, 1), (0, 2)]
 
+def test_check_legal_King():
+    n = 4
+    all_pieces = {}
+    w_pieces = {}
+    b_pieces = {}
+    w_pieces["w_K"] = piece.King((0,0), 1)
+    b_pieces["b_R_r"] = piece.Rook((2,1), -1)
+    all_pieces["w_pieces"] = w_pieces
+    all_pieces["b_pieces"] = b_pieces
+
+    board = logic.initialize_board(all_pieces, n)
+    test_board = logic.Board(8)
+    test_board.pieces = all_pieces
+    test_board.board = board
+    test_board.n = n
+    king = test_board.pieces["w_pieces"]["w_K"]
+    import pdb; pdb.set_trace()
+    assert test_board.check_legal_king((0,1),king.player,king.pos) == False
+    assert test_board.check_legal_king((1,0),king.player,king.pos) == True
+
 def test_king_in_check():
     n = 4
     all_pieces = {}
@@ -115,11 +135,13 @@ if __name__=="__main__":
     test_execute_action()
     print("\tRunning unit tests for switch_orientation")
     test_switch_orientation()
+    print("\tRunning unit test for king_in_check")
+    test_king_in_check()
     print("\tRunning unit test for check_legal")
     test_check_legal()
     print("\tRunning unit test for check_legal_Pawn")
     test_check_legal_Pawn()
-    print("\tRunning unit test for king_in_check")
-    test_king_in_check()
+    print("\tRunning unit test for check_legal_King")
+    test_check_legal_King()
     print("Passed tests for ChessGame.py")
 

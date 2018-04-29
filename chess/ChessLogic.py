@@ -156,7 +156,7 @@ class Board():
         
         return False
  
-     def check_legal_king(self, action, player, pos):
+    def check_legal_king(self, action, player, pos):
         '''
         Checks if an action is legal for king pieces.
         '''
@@ -171,11 +171,17 @@ class Board():
 
         if self.board[new_pos[0], new_pos[1]] == None:
             self.board[new_pos[0], new_pos[1]] = king
-
-            if self.king_in_check():
+            self.board[pos[0], pos[1]] = None
+            king.pos = new_pos
+            if self.king_in_check(player):
                 self.board[new_pos[0], new_pos[1]] = None
+                self.board[pos[0], pos[1]] = king
+                king.pos = pos
                 return False
             else:
+                self.board[new_pos[0], new_pos[1]] = None
+                self.board[pos[0], pos[1]] = king
+                king.pos = pos
                 return True
 
         cur_piece = self.board[new_pos[0], new_pos[1]]
@@ -184,10 +190,15 @@ class Board():
         else:
             self.board[new_pos[0], new_pos[1]] = king
 
-            if self.king_in_check():
+            if self.king_in_check(player):
                 self.board[new_pos[0], new_pos[1]] = cur_piece
+                self.board[pos[0], pos[1]] = king
+                king.pos = pos
                 return False
             else:
+                self.board[new_pos[0], new_pos[1]] = cur_piece
+                self.board[pos[0], pos[1]] = king
+                king.pos = pos
                 return True
   
     def get_legal_actions_piece(self, cur_piece):
@@ -274,7 +285,6 @@ class Board():
 
         self.board = initialize_board(all_pieces, self.n)
 
-        
     def king_in_check(self, cur_player):
         '''
         Checks if the King is currently in check
