@@ -32,6 +32,7 @@ def test_execute_action():
     action = (0,2)
     board.execute_action([w_P_0, action])
     assert w_P_0.pos == (0, 3)
+    assert board.board[0,3] == w_P_0
 
 def test_switch_orientation():
     board = logic.Board(8)
@@ -99,7 +100,6 @@ def test_check_legal_King():
     test_board.board = board
     test_board.n = n
     king = test_board.pieces["w_pieces"]["w_K"]
-    import pdb; pdb.set_trace()
     assert test_board.check_legal_king((0,1),king.player,king.pos) == False
     assert test_board.check_legal_king((1,0),king.player,king.pos) == True
 
