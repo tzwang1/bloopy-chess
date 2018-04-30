@@ -158,6 +158,34 @@ def test_king_in_check():
     
     assert test_board.king_in_check(1) == True
 
+def test_king_in_checkmate():
+    n = 4
+    all_pieces = {}
+    w_pieces = {}
+    b_pieces = {}
+
+    w_pieces["w_K"] = piece.King((0,0), 1)
+    b_pieces["b_Q"] = piece.Queen((1,1), -1)
+    b_pieces["b_B_l"] = piece.Bishop((3,3), -1)
+    all_pieces["w_pieces"] = w_pieces
+    all_pieces["b_pieces"] = b_pieces
+
+    board = logic.initialize_board(all_pieces, n)
+    test_board = logic.Board(8)
+    
+    # King is in checkmate
+    test_board.pieces = all_pieces
+    test_board.board = board
+    test_board.n = n
+    assert test_board.king_in_checkmate(1) == True
+    
+    # Move Queen so king is not in checkmate
+    queen = test_board.pieces["b_pieces"]["b_Q"]
+    queen.pos = (1,3)
+    test_board.board[1,1] = None
+    test_board.board[1,3] = queen
+    assert test_board.king_in_checkmate(1) == False
+
 if __name__=="__main__":
     print("#" * 50)
     print("Running tests for ChessPieces.py")
@@ -173,6 +201,8 @@ if __name__=="__main__":
     test_switch_orientation()
     print("\tRunning unit test for king_in_check")
     test_king_in_check()
+    print("\tRunning unit test for king_in_checkmate")
+    test_king_in_checkmate()
     print("\tRunning unit test for check_legal")
     test_check_legal()
     print("\tRunning unit test for check_legal_Pawn")

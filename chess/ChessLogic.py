@@ -326,7 +326,7 @@ class Board():
         else:
             king = self.pieces["b_pieces"]["b_K"]
        
-        actions = self.get_legal_action_piece(king)
+        actions = self.get_legal_actions_piece(king)
         if len(actions[1]) == 0:
             return True
         else:
