@@ -120,7 +120,7 @@ class Board():
         Checks if an action is legal for pawn pieces.
         '''
         new_pos = (pos[0] + action[0], pos[1] + action[1])
-        if (new_pos[0] < 0 or new_pos[0] > 7 or new_pos[1] < 0 or new_pos[1] > 7): 
+        if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1): 
             return False
  
         if action == (0,2):
@@ -244,7 +244,7 @@ class Board():
             if len(actions[1]) > 0:
                 legal_actions.append(actions)
         return legal_actions
-
+    
     def execute_action(self, action):
         '''
         Executes an action on the board
@@ -254,6 +254,12 @@ class Board():
         
         if isinstance(cur_piece, piece.King) or isinstance(cur_piece, piece.Rook):
             cur_piece.has_moved = True
+
+        if isinstance(cur_piece, piece.Pawn):
+            if action == (0,2):
+                cur_piece.enpassant = True
+            else:
+                cur_piece.enpassant = False
         cur_pos = cur_piece.pos
         new_pos = (cur_pos[0] + action[0], cur_pos[1] + action[1])
         self.board[new_pos[0], new_pos[1]] = cur_piece

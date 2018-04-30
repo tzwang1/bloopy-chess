@@ -83,6 +83,42 @@ def test_check_legal_Pawn():
     legal_actions = test_board.get_legal_actions(1)
     
     assert legal_actions[0][1] == [(0, 1), (0, 2)]
+    w_pawn = legal_actions[0][0]
+    action = legal_actions[0][1][1]
+    move = (w_pawn, action)
+    test_board.execute_action(move)
+    
+    legal_actions = test_board.get_legal_actions(1)
+    w_pawn = legal_actions[0][0]
+    action = legal_actions[0][1][0]
+    move = (w_pawn, action)
+    test_board.execute_action(move)
+    
+    test_board.switch_orientation()
+    legal_actions = test_board.get_legal_actions(-1)
+    assert legal_actions[0][1] == [(0,1), (0,2)]
+
+    b_pawn = legal_actions[0][0]
+    action = legal_actions[0][1][1]
+    move = (b_pawn, action)
+    test_board.execute_action(move)
+
+    test_board.switch_orientation()
+    legal_actions = test_board.get_legal_actions(1)
+    
+    assert legal_actions[0][1] == [(1,1), (0,1)]
+    test_board.switch_orientation()
+    
+    b_pawn = b_pieces["b_P_1"]
+    b_pawn.pos = (1,2)
+
+    test_board.board[1,2] = b_pawn
+    test_board.board[1,3] = None
+    
+    test_board.switch_orientation()
+    legal_actions = test_board.get_legal_actions(1)
+    
+    assert legal_actions[0][1] == [(1,1), (0,1)]
 
 def test_check_legal_King():
     n = 4
@@ -123,11 +159,11 @@ def test_king_in_check():
     assert test_board.king_in_check(1) == True
 
 if __name__=="__main__":
-    print("#" * 80)
+    print("#" * 50)
     print("Running tests for ChessPieces.py")
     test_chessPieces()
     print("Passed tests for ChessPieces.py")
-    print("#" * 80)
+    print("#" * 50)
     
     print("Running tests for ChessGame.py")
     test_chessGame()
@@ -144,4 +180,4 @@ if __name__=="__main__":
     print("\tRunning unit test for check_legal_King")
     test_check_legal_King()
     print("Passed tests for ChessGame.py")
-
+    print("#" * 50)
