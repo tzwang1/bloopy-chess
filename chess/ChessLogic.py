@@ -331,6 +331,13 @@ class Board():
             return True
         else:
             return False
+
+    def stalemate(self, cur_player):
+        legal_actions = self.get_legal_actions(cur_player)
+        if len(legal_actions) == 0:
+            return True
+        else:
+            return False
             
 if __name__=="__main__":
     board = Board(8)
