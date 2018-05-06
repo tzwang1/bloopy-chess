@@ -4,6 +4,7 @@ sys.path.append('..')
 import ChessLogic as logic
 import ChessGame as game
 import ChessPieces as piece
+import ChessPlayers as players
 
 # ============================================================================
 # Unit tests for ChessPieces.py
@@ -273,9 +274,18 @@ def test_convert_to_nums():
               [ -2.,  -1.,  0.,  0.,  0.,  0., 1., 2.],
               [ -4.,  -1.,  0.,  0.,  0.,  0., 1., 4.]])) == True
 
+# ============================================================================
+# Unit tests for ChessPlayers.py
+# ============================================================================
+def test_random_player():
+    np.random.seed(0)
+    test_game = game.Game(10, 8)
 
-    
-
+    rand_player = players.RandomPlayer(test_game)
+    move = rand_player.play(test_game.board)
+   
+    assert isinstance(move[0], piece.Pawn) == True
+    assert move[1] == (0,1)
 
 if __name__=="__main__":
     
@@ -321,3 +331,15 @@ if __name__=="__main__":
     test_get_next_state()
     print("\tRunning unit test for convert_to_nums")
     test_convert_to_nums()
+    print("Passed tests for ChessGame.py")
+    print("#" * 50)
+
+# ============================================================================
+# Unit tests for ChessPlayers.py
+# ============================================================================
+    print("Running tests for ChessPlayers.py")
+    print("\tRunning unit test for RandomPlayer")
+    test_random_player()
+    print("Passed tests for ChessPlayers.py")
+    print("#" * 50)
+
