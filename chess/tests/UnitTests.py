@@ -1,9 +1,15 @@
 import sys
+import numpy as np
 sys.path.append('..')
 import ChessLogic as logic
 import ChessGame as game
 import ChessPieces as piece
-def test_chessPieces():
+
+# ============================================================================
+# Unit tests for ChessPieces.py
+# ============================================================================
+
+def test_chess_pieces():
     w_king = piece.King((4,0), 1)
     b_king = piece.King((4,7), -1)
 
@@ -13,7 +19,11 @@ def test_chessPieces():
     assert b_king.player == -1
     assert w_king.has_moved == False
 
-def test_chessGame():
+# ============================================================================
+# Unit tests for ChessLogic.py
+# ============================================================================
+
+def test_chess_logic():
     board = logic.Board(8)
 
     assert len(board.pieces["w_pieces"]) == 16
@@ -215,15 +225,74 @@ def test_stalemate():
 
     assert test_board.stalemate(1) == False
 
+# ============================================================================
+# Unit tests for ChessGame.py
+# ============================================================================
+def test_chess_game():
+    test_game = game.Game(10, 8)
+    assert test_game.time == 10
+    assert test_game.cur_player == 1
+
+    board = test_game.board
+    assert isinstance(board.pieces["w_pieces"]["w_K"], piece.King) == True
+    assert board.pieces["w_pieces"]["w_K"].pos == (4,0)
+
+def test_get_next_state():
+    test_game = game.Game(10, 8)
+    legal_actions = test_game.board.get_legal_actions(test_game.cur_player)
+    move = (legal_actions[0][0], legal_actions[0][1][1])
+    test_game.get_next_state(1, move)
+    assert isinstance(test_game.board.board[2,5], piece.Knight) == True
+    assert test_game.board.pieces["w_pieces"]["w_N_l"].pos == (2,5)
+    assert test_game.cur_player == -1
+
+def test_convert_to_nums():
+    test_game = game.Game(10, 8)
+    matrix_board = test_game.convert_to_nums()
+    assert np.array_equal(matrix_board, 
+    np.array([[ 4.,  1.,  0.,  0.,  0.,  0., -1., -4.],
+              [ 2.,  1.,  0.,  0.,  0.,  0., -1., -2.],
+              [ 3.,  1.,  0.,  0.,  0.,  0., -1., -3.],
+              [ 5.,  1.,  0.,  0.,  0.,  0., -1., -5.],
+              [ 6.,  1.,  0.,  0.,  0.,  0., -1., -6.],
+              [ 3.,  1.,  0.,  0.,  0.,  0., -1., -3.],
+              [ 2.,  1.,  0.,  0.,  0.,  0., -1., -2.],
+              [ 4.,  1.,  0.,  0.,  0.,  0., -1., -4.]])) == True
+
+    legal_actions = test_game.board.get_legal_actions(test_game.cur_player)
+    move = (legal_actions[0][0], legal_actions[0][1][1])
+    test_game.get_next_state(test_game.cur_player, move)
+    matrix_board = test_game.convert_to_nums()
+    assert np.array_equal(matrix_board, 
+    np.array([[ -4.,  -1.,  0.,  0.,  0.,  0., 1., 4.],
+              [ -2.,  -1.,  0.,  0.,  0.,  0., 1., 0.],
+              [ -3.,  -1.,  0.,  0.,  0.,  2., 1., 3.],
+              [ -5.,  -1.,  0.,  0.,  0.,  0., 1., 5.],
+              [ -6.,  -1.,  0.,  0.,  0.,  0., 1., 6.],
+              [ -3.,  -1.,  0.,  0.,  0.,  0., 1., 3.],
+              [ -2.,  -1.,  0.,  0.,  0.,  0., 1., 2.],
+              [ -4.,  -1.,  0.,  0.,  0.,  0., 1., 4.]])) == True
+
+
+    
+
+
 if __name__=="__main__":
+    
+# ============================================================================
+# Unit tests for ChessPieces.py
+# ============================================================================
     print("#" * 50)
     print("Running tests for ChessPieces.py")
-    test_chessPieces()
+    test_chess_pieces()
     print("Passed tests for ChessPieces.py")
     print("#" * 50)
     
+# ============================================================================
+# Unit tests for ChessLogic.py
+# ============================================================================
     print("Running tests for ChessLogic.py")
-    test_chessGame()
+    test_chess_logic()
     print("\tRunning unit test for execute_action")
     test_execute_action()
     print("\tRunning unit tests for switch_orientation")
@@ -242,3 +311,13 @@ if __name__=="__main__":
     test_stalemate()
     print("Passed tests for ChessLogic.py")
     print("#" * 50)
+
+# ============================================================================
+# Unit tests for ChessGame.py
+# ============================================================================
+    print("Running tests for ChessGame.py")
+    test_chess_game()
+    print("\tRunning unit test for get_next_state")
+    test_get_next_state()
+    print("\tRunning unit test for convert_to_nums")
+    test_convert_to_nums()
