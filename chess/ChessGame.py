@@ -39,9 +39,9 @@ class Game():
 
         if self.board.stalemate(player):
             return 0
-        elif self.board.king_in_checkmate(self, player):
+        elif self.board.king_in_checkmate(player):
             return -1
-        elif self.board.king_in_checkmate(self, -player):
+        elif self.board.king_in_checkmate(-player):
             return 1
         else:
             # Game is not over yet
@@ -64,7 +64,7 @@ class Game():
         -5 - black queen
         -6 - black king
         '''
-        matrix_board = np.zeros((self.board.n, self.board.n))
+        matrix_board = np.zeros((self.board.n, self.board.n),dtype=int)
         for i in range(self.board.n):
             for j in range(self.board.n):
                 if self.board.board[i,j] == None:
@@ -94,5 +94,6 @@ class Game():
                 matrix_board[i][j] = value
 
         return matrix_board
-                    
+    
+         
     

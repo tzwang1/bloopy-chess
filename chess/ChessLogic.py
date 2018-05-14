@@ -90,7 +90,7 @@ class Board():
 
         # Adding pieces to the board (always starts from perspective of white player
         self.board = initialize_board(self.pieces, n)
- 
+
     def __getitem__(self, pos):
         x, y = pos
         return self.board[x][y]
@@ -98,22 +98,53 @@ class Board():
     def __str__(self):
         return str(self.board)
     
+    def get_all_attacked_positions(self, cur_player):
+        if cur_player == 1:
+            pieces = self.pieces["w_pieces"]
+        else:
+            pieces = self.pieces["b_pieces"]
+
+        attacked_pos = []
+        for key in pieces:
+            cur_piece = pieces[key]
+            cur_pos = cur_piece.pos
+            for attack in cur_piece.attacking:
+                for speed in cur_piece.speed:
+                    attacked = (cur_pos[0] + speed * attack[0], cur_pos[1] + speed * attack[1])
+                    if attacked[0] <  0 or attacked[0] > self.n-1 or attacked[1] < 0 or attacked[1] > self.n-1:
+                        break
+                    if self.board[attacked[0], attacked[1]] == None:
+                        attacked_pos.append(attacked)
+                    else:
+                        other_piece = self.board[attacked[0], attacked[1]]
+                        if other_piece.player == cur_player:
+                            break
+                        else:
+                            attacked_pos.append(attacked)
+    
+        return attacked_pos
+
     def check_legal(self, action, player, pos):
         '''
         Checks if an action is legal.
+        First return value says if the action is legal
+        Second return value says if the following actions are legal
         '''
         new_pos = (pos[0] + action[0], pos[1] + action[1])
         if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1): 
-            return False
-                
+            return False, True
+    
         if self.board[new_pos[0], new_pos[1]] == None:
-            return True
+            return self.king_not_vulnerable(pos, new_pos, player), False
         
-        cur_piece = self.board[new_pos[0], new_pos[1]]
-        if cur_piece.player == player:
-            return False
-        else: 
-            return True
+        other_piece = self.board[new_pos[0], new_pos[1]]
+        if other_piece.player == player:
+            return False, False
+        else:
+            if self.board[new_pos[0], new_pos[1]] == None:
+                return self.king_not_vulnerable(pos, new_pos, player), False
+            
+            return True, False
     
     def check_legal_pawn(self, action, player, pos):
         '''
@@ -129,29 +160,29 @@ class Board():
             
             if self.board[new_pos[0], new_pos[1]-1] != None or self.board[new_pos[0], new_pos[1]] != None:
                 return False
+            else:
+                return self.king_not_vulnerable(pos, new_pos, player)
 
-            return True
-        
         elif action == (0,1):
             if self.board[new_pos[0], new_pos[1]] != None:
                 return False
             else:
-                return True
-        
+                return self.king_not_vulnerable(pos, new_pos, player)
+            
         # Action to capture an opponent piece
         elif action == (-1,1) or action == (1,1):
-            cur_piece = self.board[new_pos[0], new_pos[1]]
-            if cur_piece == None:
-                other_piece = self.board[new_pos[0], new_pos[1]-1]
-                if other_piece == None:
+            other_piece = self.board[new_pos[0], new_pos[1]]
+            if other_piece == None:
+                enpassant_piece = self.board[new_pos[0], new_pos[1]-1]
+                if enpassant_piece == None:
                     return False
                 else:
-                    if other_piece.player != player and isinstance(other_piece, piece.Pawn):
-                        if other_piece.enpassant:
-                            return True
+                    if enpassant_piece.player != player and isinstance(enpassant_piece, piece.Pawn):
+                        if enpassant_piece.enpassant:
+                            return self.king_not_vulnerable(pos, new_pos, player)
                         else:
                             return False
-            elif cur_piece.player != player:
+            elif other_piece.player != player:
                 return True
         
         return False
@@ -170,36 +201,61 @@ class Board():
             king = self.pieces["b_pieces"]["b_K"]
 
         if self.board[new_pos[0], new_pos[1]] == None:
-            self.board[new_pos[0], new_pos[1]] = king
-            self.board[pos[0], pos[1]] = None
-            king.pos = new_pos
-            if self.king_in_check(player):
-                self.board[new_pos[0], new_pos[1]] = None
-                self.board[pos[0], pos[1]] = king
-                king.pos = pos
-                return False
-            else:
-                self.board[new_pos[0], new_pos[1]] = None
-                self.board[pos[0], pos[1]] = king
-                king.pos = pos
-                return True
+            pos = king.pos
+            return self.king_not_vulnerable(pos, new_pos, player)
+            # self.board[new_pos[0], new_pos[1]] = king
+            # self.board[pos[0], pos[1]] = None
+            # king.pos = new_pos
+            # if self.king_in_check(player):
+            #     self.board[new_pos[0], new_pos[1]] = None
+            #     self.board[pos[0], pos[1]] = king
+            #     king.pos = pos
+            #     return False
+            # else:
+            #     self.board[new_pos[0], new_pos[1]] = None
+            #     self.board[pos[0], pos[1]] = king
+            #     king.pos = pos
+            #     return True
 
         cur_piece = self.board[new_pos[0], new_pos[1]]
         if cur_piece.player == player:
             return False
         else:
-            self.board[new_pos[0], new_pos[1]] = king
+            return self.king_not_vulnerable(pos, new_pos, player)
+            # self.board[new_pos[0], new_pos[1]] = king
 
-            if self.king_in_check(player):
-                self.board[new_pos[0], new_pos[1]] = cur_piece
-                self.board[pos[0], pos[1]] = king
-                king.pos = pos
-                return False
-            else:
-                self.board[new_pos[0], new_pos[1]] = cur_piece
-                self.board[pos[0], pos[1]] = king
-                king.pos = pos
-                return True
+            # if self.king_in_check(player):
+            #     self.board[new_pos[0], new_pos[1]] = cur_piece
+            #     self.board[pos[0], pos[1]] = king
+            #     king.pos = pos
+            #     return False
+            # else:
+            #     self.board[new_pos[0], new_pos[1]] = cur_piece
+            #     self.board[pos[0], pos[1]] = king
+            #     king.pos = pos
+            #     return True
+    
+    def king_not_vulnerable(self, pos, new_pos, player):
+        '''
+        Checks if moving the piece as pos to new_pos will leave the king in check
+        '''
+        cur_piece = self.board[pos[0], pos[1]]
+        other_piece = self.board[new_pos[0], new_pos[1]]
+
+        cur_piece.pos = new_pos
+        self.board[pos[0], pos[1]] = None
+        self.board[new_pos[0], new_pos[1]] = cur_piece
+
+        if self.king_in_check(player):
+            not_vulnerable = False
+        else:
+            not_vulnerable = True
+        
+        cur_piece.pos = pos
+        self.board[pos[0], pos[1]] = cur_piece
+        self.board[new_pos[0], new_pos[1]] = other_piece
+
+        return not_vulnerable
   
     def get_legal_actions_piece(self, cur_piece):
         '''
@@ -223,8 +279,11 @@ class Board():
             for action in cur_piece.actions:
                 for speed in cur_piece.speed:
                     cur_action = [action[0]*speed, action[1]*speed]
-                    if self.check_legal(cur_action, cur_piece.player, cur_piece.pos):
+                    legal, blocked = self.check_legal(cur_action, cur_piece.player, cur_piece.pos)
+                    if legal:
                         all_actions.append(cur_action)
+                        if blocked:
+                            break
                     else:
                         break
         legal_actions.append(all_actions)
@@ -291,6 +350,7 @@ class Board():
 
         self.board = initialize_board(all_pieces, self.n)
 
+   
     def king_in_check(self, cur_player):
         '''
         Checks if the King is currently in check
@@ -298,23 +358,28 @@ class Board():
         other_player = cur_player*-1
         if cur_player == 1:
             pieces = self.pieces["w_pieces"]
+            if "w_K" in pieces:
+                cur_piece = pieces["w_K"]
+            else:
+                print("White King is not on the board")
+                return False
         else:
             pieces = self.pieces["b_pieces"]
+            if "b_K" in pieces:
+                cur_piece = pieces["b_K"]
+            else:
+                print("Black King is not on the board")
+                return False
 
-        cur_piece = pieces["w_K"]
         if not isinstance(cur_piece, piece.King):
             print("Error, piece is not a King")
             return
 
         king_pos = cur_piece.pos
-        legal_actions = self.get_legal_actions(other_player)
-        for action in legal_actions:
-            cur_piece = action[0]
-            moves = action[1]
-            for move in moves:
-                new_pos = (cur_piece.pos[0] + move[0], cur_piece.pos[1] + move[1])
-                if new_pos == king_pos:
-                    return True
+        attacked_pos = self.get_all_attacked_positions(other_player)
+        if king_pos in attacked_pos:
+            return True
+        
         return False
 
     def king_in_checkmate(self, cur_player):

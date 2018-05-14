@@ -2,4 +2,4 @@
 chess bot trained with reinforcement learning
 
 TODO:
-Work on ChessGame.py
+Figure out how to communicate between node.js and python
