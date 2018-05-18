@@ -45,6 +45,19 @@ def test_execute_action():
     assert w_P_0.pos == (0, 3)
     assert board.board[0,3] == w_P_0
 
+    board.switch_orientation()
+    b_P_1 = board.pieces["b_pieces"]["b_P_1"]
+    action = (0,2)
+    board.execute_action([b_P_1, action])
+    assert b_P_1.pos == (1, 3)
+    assert board.board[1,3] == b_P_1
+
+    board.switch_orientation()
+    action = (1,1)
+    board.execute_action([w_P_0, action])
+    assert w_P_0.pos == (1,4)
+    assert board.board[0,3] == None
+
 def test_switch_orientation():
     board = logic.Board(8)
     w_P_0 = board.pieces["w_pieces"]["w_P_0"]
