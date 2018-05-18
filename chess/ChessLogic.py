@@ -203,37 +203,12 @@ class Board():
         if self.board[new_pos[0], new_pos[1]] == None:
             pos = king.pos
             return self.king_not_vulnerable(pos, new_pos, player)
-            # self.board[new_pos[0], new_pos[1]] = king
-            # self.board[pos[0], pos[1]] = None
-            # king.pos = new_pos
-            # if self.king_in_check(player):
-            #     self.board[new_pos[0], new_pos[1]] = None
-            #     self.board[pos[0], pos[1]] = king
-            #     king.pos = pos
-            #     return False
-            # else:
-            #     self.board[new_pos[0], new_pos[1]] = None
-            #     self.board[pos[0], pos[1]] = king
-            #     king.pos = pos
-            #     return True
 
         cur_piece = self.board[new_pos[0], new_pos[1]]
         if cur_piece.player == player:
             return False
         else:
             return self.king_not_vulnerable(pos, new_pos, player)
-            # self.board[new_pos[0], new_pos[1]] = king
-
-            # if self.king_in_check(player):
-            #     self.board[new_pos[0], new_pos[1]] = cur_piece
-            #     self.board[pos[0], pos[1]] = king
-            #     king.pos = pos
-            #     return False
-            # else:
-            #     self.board[new_pos[0], new_pos[1]] = cur_piece
-            #     self.board[pos[0], pos[1]] = king
-            #     king.pos = pos
-            #     return True
     
     def king_not_vulnerable(self, pos, new_pos, player):
         '''
@@ -308,8 +283,11 @@ class Board():
         '''
         Executes an action on the board
         '''
+        print(action)
         cur_piece = action[0]
+        print(cur_piece.pos)
         action = action[1]
+        #import pdb; pdb.set_trace()
         
         if isinstance(cur_piece, piece.King) or isinstance(cur_piece, piece.Rook):
             cur_piece.has_moved = True
