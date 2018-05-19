@@ -283,12 +283,9 @@ class Board():
         '''
         Executes an action on the board
         '''
-        print(action)
         cur_piece = action[0]
-        print(cur_piece.pos)
         action = action[1]
-        #import pdb; pdb.set_trace()
-        
+
         if isinstance(cur_piece, piece.King) or isinstance(cur_piece, piece.Rook):
             cur_piece.has_moved = True
 
@@ -299,6 +296,17 @@ class Board():
                 cur_piece.enpassant = False
         cur_pos = cur_piece.pos
         new_pos = (cur_pos[0] + action[0], cur_pos[1] + action[1])
+        other_piece = self.board[new_pos[0], new_pos[1]]
+        if other_piece != None:
+            if other_piece.player == 1:
+                pieces = self.pieces["w_pieces"]
+            else:
+                pieces = self.pieces["b_pieces"]
+            
+            for key in list(pieces):
+                if pieces[key] == other_piece:
+                    pieces.pop(key, None)
+
         self.board[new_pos[0], new_pos[1]] = cur_piece
         self.board[cur_pos[0], cur_pos[1]] = None
         cur_piece.pos = new_pos
@@ -315,6 +323,7 @@ class Board():
         for key in w_pieces:
             cur_piece = w_pieces[key]
             cur_pos = cur_piece.pos
+
             #Switch piece from one side to the other
             new_pos = (cur_pos[0], self.n-1 - cur_pos[1])
             cur_piece.pos = new_pos
@@ -322,6 +331,7 @@ class Board():
         for key in b_pieces:
             cur_piece = b_pieces[key]
             cur_pos = cur_piece.pos
+    
             #switch piece from one side to the other
             new_pos = (cur_pos[0], self.n-1 - cur_pos[1])
             cur_piece.pos = new_pos
