@@ -116,11 +116,11 @@ class Board():
                     if self.board[attacked[0], attacked[1]] == None:
                         attacked_pos.append(attacked)
                     else:
+                        # There is some piece at attacked position
                         other_piece = self.board[attacked[0], attacked[1]]
-                        if other_piece.player == cur_player:
-                            break
-                        else:
-                            attacked_pos.append(attacked)
+                        if other_piece.player != cur_player:
+                            attacked_pos.append(attacked) #Attacked piece belongs to enemy player
+                        break
     
         return attacked_pos
 
@@ -131,20 +131,21 @@ class Board():
         Second return value says if the following actions are legal
         '''
         new_pos = (pos[0] + action[0], pos[1] + action[1])
+        # Check if new position is in the board
         if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1): 
             return False, True
     
+        # Check if new position is empty
         if self.board[new_pos[0], new_pos[1]] == None:
             return self.king_not_vulnerable(pos, new_pos, player), False
         
+        # New position has a piece
         other_piece = self.board[new_pos[0], new_pos[1]]
         if other_piece.player == player:
             return False, False
         else:
-            if self.board[new_pos[0], new_pos[1]] == None:
-                return self.king_not_vulnerable(pos, new_pos, player), False
-            
-            return True, False
+            return self.king_not_vulnerable(pos, new_pos, player), False
+
     
     def check_legal_pawn(self, action, player, pos):
         '''
@@ -180,10 +181,9 @@ class Board():
                     if enpassant_piece.player != player and isinstance(enpassant_piece, piece.Pawn):
                         if enpassant_piece.enpassant:
                             return self.king_not_vulnerable(pos, new_pos, player)
-                        else:
-                            return False
+
             elif other_piece.player != player:
-                return True
+                return self.king_not_vulnerable(pos, new_pos, player)
         
         return False
  
@@ -349,14 +349,14 @@ class Board():
             if "w_K" in pieces:
                 cur_piece = pieces["w_K"]
             else:
-                print("White King is not on the board")
+                #print("White King is not on the board")
                 return False
         else:
             pieces = self.pieces["b_pieces"]
             if "b_K" in pieces:
                 cur_piece = pieces["b_K"]
             else:
-                print("Black King is not on the board")
+                #print("Black King is not on the board")
                 return False
 
         if not isinstance(cur_piece, piece.King):
@@ -391,15 +391,4 @@ class Board():
             return True
         else:
             return False
-            
-if __name__=="__main__":
-    board = Board(8)
-    check_pos = [0,5]
-    King = board.pieces["w_pieces"]["w_K"]
-    action = [King, [0,5]]
-    board.execute_action(action)
-    print(board)
-    board.switch_orientation()
-    print(board)
-    print(board.king_in_check(1))
 
