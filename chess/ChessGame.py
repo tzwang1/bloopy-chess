@@ -30,22 +30,20 @@ class Game():
         self.cur_player *= -1
         self.board.switch_orientation()
         
-    def get_game_ended(self, player):
+    def get_game_ended(self):
         '''
         Check if the game has ended (checkmate, or stalemate).
         and return 1 if the player one, -1 if the player lost, 
         and 0 if it is a stalemate.
         '''
 
-        if self.board.stalemate(player):
-            return 0
-        elif self.board.king_in_checkmate(player):
-            return -1
-        elif self.board.king_in_checkmate(-player):
-            return 1
-        else:
-            # Game is not over yet
-            return None 
+        if self.board.stalemate(self.cur_player):
+            return True
+        
+        if self.board.king_in_checkmate(self.cur_player):
+            return True
+        
+        return False
 
     def convert_to_nums(self):
         '''

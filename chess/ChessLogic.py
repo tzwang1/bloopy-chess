@@ -98,8 +98,11 @@ class Board():
     def __str__(self):
         return str(self.board)
     
-    def get_all_attacked_positions(self, cur_player):
-        if cur_player == 1:
+    def get_all_attacked_positions(self, enemy_player):
+        '''
+        Returs a list of all positions that are currently being attacked by other_player's pieces
+        '''
+        if enemy_player == 1:
             pieces = self.pieces["w_pieces"]
         else:
             pieces = self.pieces["b_pieces"]
@@ -118,8 +121,8 @@ class Board():
                     else:
                         # There is some piece at attacked position
                         other_piece = self.board[attacked[0], attacked[1]]
-                        if other_piece.player != cur_player:
-                            attacked_pos.append(attacked) #Attacked piece belongs to enemy player
+                        if other_piece.player != enemy_player:
+                            attacked_pos.append(attacked) #Attacked piece belongs to cur player
                         break
     
         return attacked_pos
@@ -386,6 +389,24 @@ class Board():
             return False
 
     def stalemate(self, cur_player):
+        w_pieces = self.pieces["w_pieces"]
+        b_pieces = self.pieces["b_pieces"]
+        
+        w_draw = False
+        b_draw = False
+        if len(w_pieces) <= 2 and len(b_pieces) <= 2:
+            for key in w_pieces:
+                if isinstance(w_pieces[key], piece.Knight) or isinstance(w_pieces[key], piece.Bishop):
+                    w_draw = True
+            
+            for key in b_pieces:
+                if isinstance(b_pieces[key], piece.Knight) or isinstance(b_pieces[key], piece.Bishop):
+                    b_draw = True
+            
+            if b_draw and w_draw:
+                return True
+
+            
         legal_actions = self.get_legal_actions(cur_player)
         if len(legal_actions) == 0:
             return True
