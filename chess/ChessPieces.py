@@ -57,6 +57,10 @@ class Pawn(Piece):
     def __init__(self, pos, player, name="Pawn"):
         super().__init__(name, pos, player)
         self.actions = [(-1,1), (1,1), (0,1), (0,2)]
-        self.attacking= [(-1,1), (1,1)]
+        # Attacking moves have to be in the opposite direction
+        # because when we check for squares being attacked, we are
+        # always checking from the perspective the current player
+        # so the attacking pieces belong to the other player
+        self.attacking= [(-1,-1), (1,-1)] 
         self.speed = [1]
         self.enpassant = False

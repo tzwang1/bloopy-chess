@@ -15,10 +15,9 @@ if __name__=="__main__":
     random_p = players.RandomPlayer(test_game)
     whites_turn = True
     
-    while test_game.get_game_ended(test_game.cur_player) == None:
+    while not test_game.get_game_ended():
+
         move = random_p.play(test_game.board)
-        #print(test_game.board.board)
-        #import pdb; pdb.set_trace()
         test_game.get_next_state(test_game.cur_player, move)
         matrix_board = test_game.convert_to_nums()
         if not whites_turn:
@@ -27,9 +26,5 @@ if __name__=="__main__":
         else:
             whites_turn = False
         attacked_pos = test_game.board.get_all_attacked_positions(test_game.cur_player)
-        #print("#" * 20)
         print(board.game(np.transpose(matrix_board)))
-        #print(np.transpose(matrix_board))
-        #print(test_game.cur_player)
-        #print("#" * 20)
         time.sleep(3)
