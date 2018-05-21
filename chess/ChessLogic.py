@@ -395,6 +395,12 @@ class Board():
         w_draw = False
         b_draw = False
         if len(w_pieces) <= 2 and len(b_pieces) <= 2:
+            if len(w_pieces) == 1:
+                w_draw = True
+            
+            if len(b_pieces) == 1:
+                b_draw = True
+
             for key in w_pieces:
                 if isinstance(w_pieces[key], piece.Knight) or isinstance(w_pieces[key], piece.Bishop):
                     w_draw = True
@@ -406,10 +412,31 @@ class Board():
             if b_draw and w_draw:
                 return True
 
-            
         legal_actions = self.get_legal_actions(cur_player)
         if len(legal_actions) == 0:
             return True
         else:
             return False
+    
+    def promote_pawn(self):
+        for i in range(self.n):
+            if isinstance(self.board[i][self.n-1], piece.Pawn):
+                cur_player = self.board[i][self.n-1].player
+                knight = piece.Knight((i,self.n-1), cur_player)
+                bishop = piece.Bishop((i,self.n-1), cur_player)
+                rook = piece.Rook((i,self.n-1), cur_player)
+                queen = piece.Queen((i,self.n-1), cur_player)
+
+                return [knight, bishop, rook, queen]
+            
+            if isinstance(self.board[i][0], piece.Pawn):
+                cur_player = self.board[i][0].player
+                knight = piece.Knight((i,0), cur_player)
+                bishop = piece.Bishop((i,0), cur_player)
+                rook = piece.Rook((i,0), cur_player)
+                queen = piece.Queen((i,0), cur_player)
+
+                return [knight, bishop, rook, queen]
+        
+        return []
 

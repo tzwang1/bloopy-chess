@@ -49,8 +49,8 @@ class Bishop(Piece):
 class Knight(Piece):
     def __init__(self, pos, player, name="Knight"):
         super().__init__(name, pos, player)
-        self.actions = [(2,1), (2,-1), (-2,1), (-2,-1), (-2,-1), (-2,1), (-1,2), (1,2)]
-        self.attacking = [(2,1), (2,-1), (-2,1), (-2,-1), (-2,-1), (-2,1), (-1,2), (1,2)]
+        self.actions = [(2,1), (2,-1), (-2,1), (-2,-1), (-1,-2), (-1,2), (1,-2), (1,2)]
+        self.attacking = [(2,1), (2,-1), (-2,1), (-2,-1), (-1,-2), (-1,2), (1,-2), (1,2)]
         self.speed = [1]
 
 class Pawn(Piece):

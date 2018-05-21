@@ -239,6 +239,31 @@ def test_stalemate():
 
     assert test_board.stalemate(1) == False
 
+def test_promote_pawn():
+    n = 4
+    all_pieces = {}
+    w_pieces = {}
+    b_pieces = {}
+
+    w_pieces["w_P_0"] = piece.Pawn((0,0),1)
+    b_pieces["b_P_0"] = piece.Pawn((0,2),-1)
+
+    all_pieces["w_pieces"] = w_pieces
+    all_pieces["b_pieces"] = b_pieces
+
+    board = logic.initialize_board(all_pieces, n)
+    test_board = logic.Board(8)
+
+    test_board.pieces = all_pieces
+    test_board.board = board
+    test_board.n = n
+
+    piece_list = test_board.promote_pawn()
+    
+    assert isinstance(piece_list[0], piece.Knight)
+    
+
+
 # ============================================================================
 # Unit tests for ChessGame.py
 # ============================================================================
@@ -295,7 +320,7 @@ def test_random_player():
     test_game = game.Game(10, 8)
 
     rand_player = players.RandomPlayer(test_game)
-    move = rand_player.play(test_game.board)
+    move = rand_player.play()
    
     assert isinstance(move[0], piece.Pawn) == True
     assert move[1] == (0,1)
@@ -332,6 +357,8 @@ if __name__=="__main__":
     test_check_legal_King()
     print("\tRunning unit test for stalemate")
     test_stalemate()
+    print("\tRunning unit test for promote_pawn")
+    test_promote_pawn()
     print("Passed tests for ChessLogic.py")
     print("#" * 50)
 
