@@ -18,11 +18,11 @@ class Piece():
 class King(Piece):
     def __init__(self, pos, player, name="King"):
         super().__init__(name, pos, player)
-        self.actions = [(1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1, 1), (0,1), (1,1)]
+        self.actions = [(1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1, 1), (0,1), (1,1), (0,2), (0,-2)]
         self.attacking = [(1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1, 1), (0,1), (1,1)]
         self.speed = [1]
         self.has_moved = False
-        self.in_check = False
+        #self.in_check = False
 
 class Queen(Piece):
     def __init__(self, pos, player, name="Queen"):

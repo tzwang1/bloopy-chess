@@ -194,6 +194,9 @@ class Board():
         '''
         Checks if an action is legal for king pieces.
         '''
+        if action == (0,-2) or action == (0,2):
+            return self.king_can_castle(player, action)
+
         new_pos = (pos[0] + action[0], pos[1] + action[1])
         if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1):
             return False
@@ -213,6 +216,58 @@ class Board():
         else:
             return self.king_not_vulnerable(pos, new_pos, player)
     
+    def king_can_castle(self, player, action):
+        '''
+        Checks if it is legal for the King to castle
+        '''
+        if self.king_in_check(player) or self.king_in_checkmate(player):
+            return False
+
+        if player == 1:
+            king = self.pieces["w_pieces"]["w_K"]
+            if action == (0,-2):
+                if "w_R_l" in self.pieces["w_pieces"]:
+                    rook = self.pieces["w_pieces"]["w_R_l"]
+                    half_action = (0, -1)
+                else:
+                    return False
+            else:
+                if "w_R_r" in self.pieces["w_pieces"]:
+                    rook = self.pieces["w_pieces"]["w_R_r"]
+                    half_action = (0, 1)
+                else:
+                    return False
+        else:
+            king = self.pieces["b_pieces"]["b_K"]
+            if action == (0,-2):
+                if "b_R_l" in self.pieces["b_pieces"]:
+                    rook = self.pieces["b_pieces"]["b_R_l"]
+                    half_action = (0, 1)
+                else:
+                    return False
+            else:
+                if "b_R_r" in self.pieces["b_pieces"]:
+                    rook = self.pieces["b_pieces"]["b_R_r"]
+                    half_action = (0, -1)
+                else:
+                    return False
+            
+        if king.has_moved or rook.has_moved:
+            return False
+        
+        moves = [half_action, action]
+
+        for move in moves:
+            new_king_pos = (king.pos[0] + move[0], king.pos[1] + move[1])
+            if self.board[new_king_pos[0], new_king_pos[1]] != None:
+                return False
+
+            if not self.king_not_vulnerable(king.pos, new_king_pos, player):
+                return False
+        
+        return True
+
+
     def king_not_vulnerable(self, pos, new_pos, player):
         '''
         Checks if moving the piece as pos to new_pos will leave the king in check
@@ -289,7 +344,48 @@ class Board():
         cur_piece = action[0]
         action = action[1]
 
-        if isinstance(cur_piece, piece.King) or isinstance(cur_piece, piece.Rook):
+        cur_pos = cur_piece.pos
+
+        if isinstance(cur_piece, piece.King):
+            if action == (0,2) or action == (0,-2):
+                if cur_piece.player == 1:
+                    pieces = self.pieces["w_pieces"]
+                    if action == (0,2):
+                        if "w_R_r" in pieces:
+                            rook = pieces["w_R_r"]
+                        else:
+                            return False
+                    
+                    if action == (0,-2):
+                        if "w_R_l" in pieces:
+                            rook = pieces["w_R_l"]
+                        else:
+                            return False
+                else:
+                    pieces = self.pieces["b_pieces"]
+                    if action == (0,2):
+                        if "b_R_r" in pieces:
+                            rook = self.pieces["b_pieces"]["b_R_r"]
+                        else:
+                            return False
+                    
+                    if action == (0,-2):
+                        if "b_R_l" in pieces:
+                            rook = self.pieces["b_pieces"]["b_R_l"]
+                        else:
+                            return False
+
+                new_king_pos = (cur_pos[0]+action[0], cur_pos[1]+action[1])
+                cur_piece.pos = new_king_pos
+                new_rook_pos = cur_pos[0]+1, cur_pos[1]
+                rook.pos = new_rook_pos
+                cur_piece.has_moved = True
+                rook.has_moved = True
+
+                self.board[new_king_pos[0], new_king_pos[1]] = cur_piece
+                self.board[rook_pos[0], rook_pos[1]] = rook
+        
+        if isinstance(cur_piece, piece.Rook):
             cur_piece.has_moved = True
 
         if isinstance(cur_piece, piece.Pawn):
@@ -297,7 +393,7 @@ class Board():
                 cur_piece.enpassant = True
             else:
                 cur_piece.enpassant = False
-        cur_pos = cur_piece.pos
+
         new_pos = (cur_pos[0] + action[0], cur_pos[1] + action[1])
         other_piece = self.board[new_pos[0], new_pos[1]]
         if other_piece != None:
@@ -389,6 +485,9 @@ class Board():
             return False
 
     def stalemate(self, cur_player):
+        '''
+        Checks if the game is in stalemate
+        '''
         w_pieces = self.pieces["w_pieces"]
         b_pieces = self.pieces["b_pieces"]
         
@@ -419,6 +518,9 @@ class Board():
             return False
     
     def promote_pawn(self):
+        '''
+        Promotes a pawn if there is a pawn in the last row or first row
+        '''
         for i in range(self.n):
             if isinstance(self.board[i][self.n-1], piece.Pawn):
                 cur_player = self.board[i][self.n-1].player

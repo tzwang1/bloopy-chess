@@ -40,11 +40,6 @@ class RandomPlayer():
         pieces[key] = cur_piece
         self.game.board.pieces[color] = pieces
 
-
-
-
-                
-
 class AlwaysAttackingPlayer():
     def __init__(self, game):
         self.game = game

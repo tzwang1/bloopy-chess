@@ -27,3 +27,12 @@ if __name__=="__main__":
             whites_turn = False
         print(board.game(np.transpose(matrix_board)))
         time.sleep(2)
+    
+    print("The game is over.")
+
+    if test_game.board.king_in_checkmate(test_game.cur_player):
+        print("The {} player has won!".format(test_game.cur_player*-1))
+    
+    #elif test_game.board.stalemate(test_game.cur_player):
+    else:
+        print("Player {} has no legal moves. The game ends in stalemate".format(test_game.cur_player))
