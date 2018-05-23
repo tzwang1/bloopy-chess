@@ -32,13 +32,15 @@ class RandomPlayer():
             color = "b_pieces"
         
         for key in pieces:
-            if pieces[key] == cur_piece:
+            if pieces[key].pos == cur_piece.pos:
                 piece_name = key
+                self.game.board.board[cur_piece.pos[0], cur_piece.pos[1]] = cur_piece
+                pieces[piece_name] = cur_piece
+                self.game.board.pieces[color] = pieces
+    
                 break
+        
 
-        self.game.board.board[cur_piece.pos[0], cur_piece.pos[1]] = cur_piece
-        pieces[key] = cur_piece
-        self.game.board.pieces[color] = pieces
 
 class AlwaysAttackingPlayer():
     def __init__(self, game):

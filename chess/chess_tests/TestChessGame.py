@@ -26,7 +26,7 @@ if __name__=="__main__":
         else:
             whites_turn = False
         print(board.game(np.transpose(matrix_board)))
-        time.sleep(2)
+        #time.sleep(2)
     
     print("The game is over.")
 
