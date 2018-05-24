@@ -3,8 +3,6 @@ chess bot trained with reinforcement learning, still WIP
 
 # How to run it
 rabbitmq-server
-npm start
+Run npm start in the frontend folder
+Run npm start in the backend folder
 
-TODO:
-Figure out how to communicate between node.js and python
-Investigate bug with capturing pieces with the King
