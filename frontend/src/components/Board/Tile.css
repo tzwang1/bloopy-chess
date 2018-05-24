@@ -1,0 +1,11 @@
+.DarkTile {
+    background-color: rgb(112, 65, 26);
+    height: 70px;
+    width: 70px;
+}
+
+.LightTile {
+    background-color: rgb(218, 174, 138);
+    height: 70px;
+    width: 70px;
+}
