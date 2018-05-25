@@ -6,9 +6,9 @@ const Play = () => {
         <div className='dropdown'>
             <p className='f3 link dim black underline pb0 mr5 mt4 pointer'>Play </p>
             <div className="dropdown-content">
-                <a href="/twoBotsRandom">Bot vs Bot (Random)</a>
-                <a href="/oneHumanOneBot">Bot vs Human</a>
-                <a href="/twoHumans">Human vs Human</a>
+                <p>Bot vs Bot (Random)</p>
+                <p>Bot vs Human</p>
+                <p>Human vs Human</p>
             </div>
         </div>
     );

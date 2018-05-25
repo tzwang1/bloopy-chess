@@ -9,7 +9,7 @@
     background-color: aliceblue;
 }
 
-.dropdown-content a {
+.dropdown-content p {
     float: none;
     text-decoration: none;
     padding: 5px;
@@ -23,6 +23,6 @@
     display: block;
 }
 
-.dropdown-content a:hover {
+.dropdown-content p:hover {
     background-color: #ddd;
 }
