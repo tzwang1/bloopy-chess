@@ -6,7 +6,7 @@ import LightTile from './Tile/LightTile';
 class Board extends React.Component {
     constructor(props) {
         super(props);
-        this.state = [[-4, -2, -3, -5, -6, -3, -2, -4],
+        this.board =   [[-4, -2, -3, -5, -6, -3, -2, -4],
                         [-1, -1, -1, -1, -1, -1, -1, -1],
                         [ 0, 0, 0, 0, 0, 0, 0, 0],
                         [ 0, 0, 0, 0, 0, 0, 0, 0],
@@ -22,21 +22,21 @@ class Board extends React.Component {
             for(let j = 0; j < 8; j++) {
                 if(i % 2 === 0) {
                     if(j % 2 === 0) {
-                        board.push(<DarkTile piece={this.state[i][j]}/>);
+                        board.push(<DarkTile piece={this.board[i][j]}/>);
                     } else {
-                        board.push(<LightTile piece={this.state[i][j]}/>);
+                        board.push(<LightTile piece={this.board[i][j]}/>);
                     }
                 } else {
                     if(j % 2 === 0){
-                        board.push(<LightTile piece={this.state[i][j]}/>);
+                        board.push(<LightTile piece={this.board[i][j]}/>);
                     } else {
-                        board.push(<DarkTile piece={this.state[i][j]}/>);
+                        board.push(<DarkTile piece={this.board[i][j]}/>);
                     }
                 }
             }
         }
         return(
-            <div className="Board"> 
+            <div className="Board pa3 mt4"> 
                 {board}
             </div>
         );

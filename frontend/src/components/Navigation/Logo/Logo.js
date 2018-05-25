@@ -4,8 +4,8 @@ import './Logo.css';
 
 const Logo = () => {
     return(
-        <div className='Logo mr4'>
-            <img className='pa3' alt='logo' src={logo}/>
+        <div className='Logo mr5 pt2'>
+            <img alt='logo' src={logo}/>
         </div>
     );
 }

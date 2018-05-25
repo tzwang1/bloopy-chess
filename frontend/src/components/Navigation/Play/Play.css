@@ -1,0 +1,28 @@
+.dropdown {
+    overflow: hidden;
+    margin: 0px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: aliceblue;
+}
+
+.dropdown-content a {
+    float: none;
+    text-decoration: none;
+    padding: 5px;
+    margin-bottom:5px;
+    color: black;
+    display: block;
+    text-align: left;
+}
+
+.dropdown:hover .dropdown-content{
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
