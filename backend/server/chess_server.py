@@ -8,7 +8,7 @@ sys.path.append('chess')
 import numpy as np
 import time
 import pika
-
+import json
 
 import ChessLogic as logic
 import ChessGame as game
@@ -25,8 +25,8 @@ channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
 
 # Initialize chess game
-test_game = game.Game(10, 8)
-random_p = players.RandomPlayer(test_game)
+chess_game = game.Game(10, 8)
+random_p = players.RandomPlayer(chess_game)
 whites_turn = True
 
 def play(game_type):
@@ -47,21 +47,24 @@ def play_two_bots():
     Returns a matrix representation of the board
     after a move.
     '''
-    global test_game
+    global chess_game
     global random_p
     global whites_turn
 
-    move = random_p.play()
-    test_game.get_next_state(test_game.cur_player, move)
-    random_p.promote_pawn()
-    matrix_board = test_game.convert_to_nums()
-    if not whites_turn:
-        matrix_board = np.flip(matrix_board, 1)
-        whites_turn = True
+    if not chess_game.get_game_ended():
+        move = random_p.play()
+        chess_game.get_next_state(chess_game.cur_player, move)
+        random_p.promote_pawn()
+        matrix_board = chess_game.convert_to_nums()
+        if not whites_turn:
+            matrix_board = np.flip(matrix_board, 1)
+            whites_turn = True
+        else:
+            whites_turn = False
+        
+        return np.transpose(matrix_board)
     else:
-        whites_turn = False
-    
-    return np.transpose(matrix_board)
+        return np.array([])
 
 def on_request(ch, method, props, body):
     '''
@@ -70,14 +73,17 @@ def on_request(ch, method, props, body):
     '''
     game_type = body
 
-    response = play(game_type)
+    board = play(game_type)
+    if len(board) == 0:
+        response = "Game Over"
+    response = board.tolist()
     print("Sent\n {}".format(response))
 
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \
                                                          props.correlation_id),
-                     body=str(response))
+                     body=json.dumps(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
     print(" [x] Awaiting RPC requests")
 
