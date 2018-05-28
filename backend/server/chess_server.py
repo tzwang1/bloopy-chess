@@ -76,7 +76,8 @@ def on_request(ch, method, props, body):
     board = play(game_type)
     if len(board) == 0:
         response = "Game Over"
-    response = board.tolist()
+    else:
+        response = board.tolist()
     print("Sent\n {}".format(response))
 
     ch.basic_publish(exchange='',

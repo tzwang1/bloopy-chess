@@ -43,6 +43,7 @@ class App extends Component {
 
   render() {
     console.log("rendering!");
+    console.log(this.state.game_playing);
     let current_screen = <Board board={this.state.board}/>;
     // if(this.current_screen === "board"){
     //   let current_screen = <Board playing={this.state.game_playing}/>;
@@ -57,13 +58,14 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.state.game_playing);
+    console.log("Updating component");
     if(this.state.game_playing) {
       switch (this.state.game_type) {
         case "Bot vs Bot (Random)":
           fetch('http://localhost:5000/twoRandomBots')
           .then(response => response.json())
           .then(data => {
+            console.log("Data: ", data);
             if(data === "Game Over") {
               this.setState({ game_playing: false});
             } else {
@@ -71,6 +73,7 @@ class App extends Component {
             }
           });
           break;
+        //TODO: Add more cases for (Bot vs Human), and (Human vs Human)
         default:
 
       }
