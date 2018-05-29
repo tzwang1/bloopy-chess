@@ -1,6 +1,7 @@
 const express = require("express");
 const amqp = require('amqplib/callback_api');
 const cors = require('cors');
+const uuidv4 = require('uuid/v4');
 
 const app = express();
 app.use(cors());
@@ -17,10 +18,15 @@ app.listen(5000, () => {
     console.log("app is running on port 5000");
 })
 
-// app.get('/', function(req, res) {
-//     console.log("Home page");
-//     res.send("Home page");
-// });
+app.get('/', function(req, res) {
+    console.log("Home page");
+    if(!req.cookies){
+        console.log(uuidv4());
+    } else {
+        console.log(req.cookies._xsrf);
+    }
+    res.send("Home page");
+});
 
 app.get('/twoRandomBots', function(req, res){
     console.log("Received request for /twoRandomBots");

@@ -8,6 +8,7 @@ class App extends Component {
     super();
     this.state = {
       game_playing: false,
+      id: "",
       game_type: "",
       current_screen: "board",
       board: [[-4, -2, -3, -5, -6, -3, -2, -4],
