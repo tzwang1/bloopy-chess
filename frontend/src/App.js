@@ -63,7 +63,10 @@ class App extends Component {
     if(this.state.game_playing) {
       switch (this.state.game_type) {
         case "Bot vs Bot (Random)":
-          fetch('http://localhost:5000/twoRandomBots')
+          fetch('http://localhost:5000/twoRandomBots',{
+            method: 'GET',
+            credentials: "include"
+          })
           .then(response => response.json())
           .then(data => {
             console.log("Data: ", data);

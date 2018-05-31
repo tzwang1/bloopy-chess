@@ -1,10 +1,19 @@
 const express = require("express");
 const amqp = require('amqplib/callback_api');
 const cors = require('cors');
-const uuidv4 = require('uuid/v4');
+const session = require('express-session');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
+app.use(session({
+    secret: 'bloopy-chess',
+    resave: false,
+    saveUninitialized: true
+
+}));
 
 AMQP_HOST = "amqp://localhost"
 
@@ -20,11 +29,7 @@ app.listen(5000, () => {
 
 app.get('/', function(req, res) {
     console.log("Home page");
-    if(!req.cookies){
-        console.log(uuidv4());
-    } else {
-        console.log(req.cookies._xsrf);
-    }
+    console.log(req.sessionID);
     res.send("Home page");
 });
 
@@ -33,7 +38,8 @@ app.get('/twoRandomBots', function(req, res){
     amqp.connect(AMQP_HOST, function(err, conn) {
         conn.createChannel(function(err, ch) {
             ch.assertQueue('', {exclusive: true}, function(err, q) {
-            let corr = generateUuid();
+            let corr = req.sessionID;
+            console.log("SessionID =", corr);
             let game_type = "two random bots";
 
             ch.consume(q.queue, function(msg) {
