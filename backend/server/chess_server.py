@@ -80,15 +80,15 @@ def play_two_bots(id):
             whites_turn = False
         
         chess_board = np.transpose(matrix_board)
+
+        games_dict[id]["chess_game"] = chess_game
+        games_dict[id]["player"] = random_p
+        games_dict[id]["whites_turn"] = whites_turn
+        games_dict[id]["is_over"] = chess_game.get_game_ended()
     else:
         chess_board = np.array([])
-        # games_dict.pop(id, None)
-        
-    games_dict[id]["chess_game"] = chess_game
-    games_dict[id]["player"] = random_p
-    games_dict[id]["whites_turn"] = whites_turn
-    games_dict[id]["is_over"] = chess_game.get_game_ended()
-
+        games_dict.pop(id, None)
+    
     return chess_board
 
 def on_request(ch, method, props, body):
