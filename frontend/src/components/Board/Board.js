@@ -10,15 +10,15 @@ const Board = ({ board }) => {
         for(let j = 0; j < 8; j++) {
             if(i % 2 === 0) {
                 if(j % 2 === 0) {
-                    board_component.push(<DarkTile key={[i,j]} piece={board[i][j]}/>);
+                    board_component.push(<DarkTile key={[i,j]} piece={board[i][j]} pos={[i,j]}/>);
                 } else {
-                    board_component.push(<LightTile key={[i,j]} piece={board[i][j]}/>);
+                    board_component.push(<LightTile key={[i,j]} piece={board[i][j]} pos={[i,j]}/>);
                 }
             } else {
                 if(j % 2 === 0){
-                    board_component.push(<LightTile key={[i,j]} piece={board[i][j]}/>);
+                    board_component.push(<LightTile key={[i,j]} piece={board[i][j]} pos={[i,j]}/>);
                 } else {
-                    board_component.push(<DarkTile key={[i,j]} piece={board[i][j]}/>);
+                    board_component.push(<DarkTile key={[i,j]} piece={board[i][j]} pos={[i,j]}/>);
                 }
             }
         }

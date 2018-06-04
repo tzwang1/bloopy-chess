@@ -14,50 +14,53 @@ import WhiteRook from '../Pieces/WhiteRook';
 import WhiteQueen from '../Pieces/WhiteQueen';
 import WhiteKing from '../Pieces/WhiteKing';
 
+import TileSize from './TileSize';
+
 const DarkTile = (props) => {
     let piece;
     switch(props.piece) {
         case -1:
-            piece = <BlackPawn />;
+            piece = <BlackPawn pos={props.pos} tileSize={TileSize}/>;
             break;
         case -2:
-            piece = <BlackKnight />;
+            piece = <BlackKnight pos={props.pos} tileSize={TileSize}/>;
             break;
         case -3:
-            piece = <BlackBishop />;
+            piece = <BlackBishop pos={props.pos} tileSize={TileSize}/>;
             break;
         case -4:
-            piece = <BlackRook />;
+            piece = <BlackRook pos={props.pos} tileSize={TileSize}/>;
             break;
         case -5:
-            piece = <BlackQueen />;
+            piece = <BlackQueen pos={props.pos} tileSize={TileSize}/>;
             break;
         case -6:
-            piece = <BlackKing />;
+            piece = <BlackKing pos={props.pos} tileSize={TileSize}/>;
             break;
         case 1:
-            piece = <WhitePawn />;
+            piece = <WhitePawn pos={props.pos} tileSize={TileSize}/>;
             break;
         case 2:
-            piece = <WhiteKnight />;
+            piece = <WhiteKnight pos={props.pos} tileSize={TileSize}/>;
             break;
         case 3:
-            piece = <WhiteBishop />;
+            piece = <WhiteBishop pos={props.pos} tileSize={TileSize}/>;
             break;
         case 4:
-            piece = <WhiteRook />;
+            piece = <WhiteRook pos={props.pos} tileSize={TileSize}/>;
             break;
         case 5:
-            piece = <WhiteQueen />;
+            piece = <WhiteQueen pos={props.pos} tileSize={TileSize}/>;
             break;
         case 6:
-            piece = <WhiteKing />;
+            piece = <WhiteKing pos={props.pos} tileSize={TileSize}/>;
             break;
         default:
     }
+    // console.log("Rendering DarkTile");
     return(
         <div className='DarkTile'>
-            {piece}
+                {piece}
         </div>
     );
 }
