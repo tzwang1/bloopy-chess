@@ -2,15 +2,27 @@ import React, { Component } from 'react';
 import './App.css';
 import Navigation from './components/Navigation/Navigation';
 import Board from './components/Board/Board'
+import Utilities from './Utilities';
+
+// Initialize some global constants
+
+// Constants for chess games
+const BOT = "bot";
+const HUMAN = "human";
+const WHITE = "white";
+const BLACK = "black"
+
+// Constants for the type of screen to display
+const BOARD = "board";
+const SIGNIN = "signin";
+const STATS = "stats";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
+      current_screen: BOARD,
       game_playing: false,
-      id: "",
-      game_type: "",
-      current_screen: "board",
       board: [[-4, -2, -3, -5, -6, -3, -2, -4],
               [-1, -1, -1, -1, -1, -1, -1, -1],
               [ 0, 0, 0, 0, 0, 0, 0, 0],
@@ -19,25 +31,63 @@ class App extends Component {
               [ 0, 0, 0, 0, 0, 0, 0, 0], 
               [ 1, 1, 1, 1, 1, 1, 1, 1], 
               [ 4, 2, 3, 5, 6, 3, 2, 4]]
-    }
+    };
+
+    this.game_data = {
+      white_player: "",
+      black_player: "",
+      current_player: WHITE,
+      game_type: "",
+      current_move: undefined
+    };
+
+    this.sessionID = ""
   }
 
   onPlayClick = (game_type) => {
     console.log("working");
     console.log(game_type);
-    this.setState({ current_screen: "board" });
+    switch(game_type) {
+      case "twoRandomBots":
+        this.game_data.black_player = BOT;
+        this.game_data.white_player = BOT;
+        fetch(`http://localhost:5000/startGame/?game_type=${game_type}`, {
+          method: 'GET',
+          credentials: 'include'
+        })
+        .then(Utilities.handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ board: data });
+        })
+        .catch(error => console.log(error))
+        break;
+      case "oneBotOneHuman":
+        console.log("Starting a game between a Bot and a human");
+        this.game_data.black_player = BOT;
+        this.game_data.white_player = HUMAN;
+        fetch(`http://localhost:5000/startGame/?game_type=${game_type}`,{
+          method: 'GET',
+          credentials: 'include'
+        })
+        .then(Utilities.handleErrors)
+        break;
+      default:
+        break;
+    }
+    this.setState({ current_screen: BOARD });
     this.setState({ game_playing: true});
-    this.setState({ game_type: game_type});
+    this.game_data.game_type =  game_type;
   }
 
   onStatsClick = () => {
-    this.setState({ current_screen: "stats" });
+    this.setState({ current_screen: STATS });
     this.setState({ game_playing: false});
     console.log("clicked stats tab");
   }
 
   onSigninClick = () => {
-    this.setState({ current_screen: "signin" });
+    this.setState({ current_screen: SIGNIN });
     this.setState({ game_playing: false });
     console.log("clicked signing tab");
   }
@@ -45,8 +95,8 @@ class App extends Component {
   render() {
     console.log("rendering!");
     console.log(this.state.game_playing);
-    let current_screen = <Board board={this.state.board}/>;
-    // if(this.current_screen === "board"){
+    let current_screen = <Board className={BOARD} board={this.state.board}/>;
+    // if(this.current_screen === BOARD){
     //   let current_screen = <Board playing={this.state.game_playing}/>;
     // }
     return (
@@ -61,12 +111,13 @@ class App extends Component {
   componentDidUpdate() {
     console.log("Updating component");
     if(this.state.game_playing) {
-      switch (this.state.game_type) {
-        case "Bot vs Bot (Random)":
-          fetch('http://localhost:5000/twoRandomBots',{
-            method: 'GET',
+      switch (this.game_data.game_type) {
+        case "twoRandomBots":
+          fetch("http://localhost:5000/playTwoRandomBots",{
+            method: "GET",
             credentials: "include"
           })
+          .then(Utilities.handleErrors)
           .then(response => response.json())
           .then(data => {
             console.log("Data: ", data);
@@ -77,6 +128,28 @@ class App extends Component {
             }
           });
           break;
+        case "oneBotOneHuman":
+          let {white_player, black_player, current_player, game_type, current_move} = this.game_data;
+          if(current_player === WHITE && white_player === HUMAN)
+            fetch("http://localhost:5000/oneBotOneHuman",  {
+              method: "POST",
+              credentials: "include",
+              body: JSON.stringify({"move": {"old_pos": [1,1], "new_pos": [2,2] }}),
+              headers:{
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(Utilities.handleErrors)
+            .then(response =>  response.json())
+            .then(data => {
+              console.log("Data: ", data);
+              if(data === "Game Over") {
+                this.setState({ game_playing: false});
+              } else {
+                this.setState({ board: data });
+              }
+            });
+          break
         //TODO: Add more cases for (Bot vs Human), and (Human vs Human)
         default:
 
