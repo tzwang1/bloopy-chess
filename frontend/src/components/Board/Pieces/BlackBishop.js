@@ -1,33 +1,17 @@
 import React, { Component } from 'react';
-// import bB from './icons/bB.svg';
 import Draggable from 'react-draggable';
 
 class BlackBishop extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            deltaPosition: {
+            gridPosition: {
                 x: 0,
                 y: 0
-            },
-            controlledPosition: {
-                x:0,
-                y:0
-            },
-            pos: this.props.pos
+            }
         }
         this.tileSize = props.tileSize;
-    }
-
-    handleDrag = (e, ui) => {
-        const {x, y} = this.state.deltaPosition;
-        this.setState({
-          deltaPosition: {
-            x: x + ui.deltaX,
-            y: y + ui.deltaY,
-          }
-        });
-
+        this.matrixPos = this.props.pos;
     }
     
     onStart = () => {
@@ -37,41 +21,53 @@ class BlackBishop extends Component {
     }
 
     onStop = (event, drag) => {
-        console.log("In onStop");
         let activeDrags = this.state.activeDrags
         this.setState({activeDrags: --activeDrags});
     }
 
-    onControlledDrag = (e, position) => {
-        console.log("In onControlledDrag");
-        let {x, y} = position;
-       
-        if(x % this.tileSize > 35) {
-            x = x + (this.tileSize - (x % this.tileSize));
+    adjustPos = (pos) => {
+        let new_pos;
+        if(Math.abs(pos % this.tileSize) > Math.floor(this.tileSize/2)) {
+            if(pos > 0) {
+                new_pos = pos + (this.tileSize - (pos % this.tileSize));
+            } else {
+                new_pos = pos - (this.tileSize + (pos % this.tileSize));
+            }
         } else {
-            x = x - (x % this.tileSize);
+            new_pos = pos - (pos % this.tileSize);
         }
+        return new_pos
+    }
 
-        if(y % this.tileSize > 35) {
-            y = y + (this.tileSize - (y % this.tileSize));
-        } else {
-            y = y - (y % this.tileSize);
-        }
-        this.setState({controlledPosition: {x, y}});
+    onControlledDrag = (e, position) => {
+        let {x, y} = position;
+        console.log("position", position);
+        let oldGridX = this.state.gridPosition.x;
+        let oldGridY = this.state.gridPosition.y;
+
+        x = this.adjustPos(x);
+        y = this.adjustPos(y);
+
+        this.setState({gridPosition: {x, y}});
+    
+        let newRow = ((y - oldGridY) / this.tileSize) + this.matrixPos[0];
+        let newCol = ((x - oldGridX) / this.tileSize) + this.matrixPos[1];
+        this.matrixPos = [newRow, newCol];
     }
     
     onControlledDragStop = (e, position) => {
-        console.log("In onControlledDragStop");
         this.onControlledDrag(e, position);
         this.onStop();
     }
     
     render() {
         console.log("Rendering black bishop");
-        const controlledPosition = this.state.controlledPosition;
+        console.log("Controlled Position", this.state.gridPosition);
+        console.log("Position", this.matrixPos);
+        const gridPosition = this.state.gridPosition;
         const dragHandlers = {onStart: this.onStart, onStop: this.onControlledDragStop};
         return(
-            <Draggable disabled={false} position={controlledPosition} bounds="parent" onDrag={this.handleDrag} {...dragHandlers}>
+            <Draggable disabled={false} position={gridPosition} bounds="parent" {...dragHandlers}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" height="100%">
                     <g
                         fill="none"
