@@ -83,6 +83,7 @@ class WhiteKnight extends Component {
                         />
                         <path d="M9.5 25.5a.5.5 0 1 1-1 0 .5.5 0 1 1 1 0z" fill="#000" />
                         <path
+                        stroke="#000"
                         d="M14.933 15.75a.5 1.5 30 1 1-.866-.5.5 1.5 30 1 1 .866.5z"
                         fill="#000"
                         strokeWidth="1.49997"

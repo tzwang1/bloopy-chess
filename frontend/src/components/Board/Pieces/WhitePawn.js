@@ -12,7 +12,6 @@ class WhitePawn extends Component {
         }
         this.tileSize = props.tileSize;
         this.matrixPos = this.props.pos;
-        this.handleMove = props.handleMove;
     }
     
     onStart = () => {
@@ -54,7 +53,8 @@ class WhitePawn extends Component {
         let newRow = ((y - oldGridY) / this.tileSize) + this.matrixPos[0];
         let newCol = ((x - oldGridX) / this.tileSize) + this.matrixPos[1];
         this.matrixPos = [newRow, newCol];
-        this.handleMove([x, y], [newRow, newCol]);
+        console.log(this.props.handleMove);
+        this.props.handleMove([x, y], [newRow, newCol]);
     }
     
     onControlledDragStop = (e, position) => {
