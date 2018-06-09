@@ -22,40 +22,40 @@ const LightTile = (props) => {
     // console.log("Rendering LightTile");
     switch(props.piece) {
         case -1:
-            piece = <BlackPawn pos={props.pos} tileSize={TileSize}/>;
+            piece = <BlackPawn pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case -2:
-            piece = <BlackKnight pos={props.pos} tileSize={TileSize}/>;
+            piece = <BlackKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case -3:
-            piece = <BlackBishop pos={props.pos} tileSize={TileSize}/>;
+            piece = <BlackBishop pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case -4:
-            piece = <BlackRook pos={props.pos} tileSize={TileSize}/>;
+            piece = <BlackRook pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case -5:
-            piece = <BlackQueen pos={props.pos} tileSize={TileSize}/>;
+            piece = <BlackQueen pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case -6:
-            piece = <BlackKing pos={props.pos} tileSize={TileSize}/>;
+            piece = <BlackKing pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case 1:
-            piece = <WhitePawn pos={props.pos} tileSize={TileSize}/>;
+            piece = <WhitePawn pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case 2:
-            piece = <WhiteKnight pos={props.pos} tileSize={TileSize}/>;
+            piece = <WhiteKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case 3:
-            piece = <WhiteBishop pos={props.pos} tileSize={TileSize}/>;
+            piece = <WhiteBishop pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case 4:
-            piece = <WhiteRook pos={props.pos} tileSize={TileSize}/>;
+            piece = <WhiteRook pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case 5:
-            piece = <WhiteQueen pos={props.pos} tileSize={TileSize}/>;
+            piece = <WhiteQueen pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         case 6:
-            piece = <WhiteKing pos={props.pos} tileSize={TileSize}/>;
+            piece = <WhiteKing pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
             break;
         default:
     }
