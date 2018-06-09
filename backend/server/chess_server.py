@@ -29,15 +29,19 @@ channel.queue_declare(queue='rpc_queue')
 # Initialize a dictionary of chess game
 games_dict = {}
 
-def play(game_type, id):
+def play(game_data, id):
     '''
     Determines what type of game to start.
     Returns the matrix representation of the board
     after a move.
     '''
-    game_type = game_type.decode("utf-8")
+
+    game_type = game_data["game_type"]
     if game_type == 'two random bots':
         return play_two_bots(id)
+    
+    if game_type == "one bot one human":
+        return play_one_bot_one_human(id, game_data)
     
     return "invalid game type"
 
@@ -48,7 +52,7 @@ def play_two_bots(id):
     after a move.
     '''
     global games_dict
-    print(games_dict)
+
     if id in games_dict:
         chess_game = games_dict[id]["chess_game"]
         random_p = games_dict[id]["player"] 
@@ -64,10 +68,7 @@ def play_two_bots(id):
         games_dict[id]["whites_turn"] = whites_turn
         games_dict[id]["is_over"] = chess_game.get_game_ended()
 
-    print("In play two bots")
-    # import pdb; pdb.set_trace()
     if not chess_game.get_game_ended():
-        print("in if statement")
         move = random_p.play()
         chess_game.get_next_state(chess_game.cur_player, move)
         random_p.promote_pawn()
@@ -91,19 +92,38 @@ def play_two_bots(id):
     
     return chess_board
 
+def play_one_bot_one_human(id, game_data):
+    global games_dict
+    if id in games_dict:
+        chess_game = games_dict[id]["chess_game"]
+        random_p = games_dict[id]["player"] 
+        whites_turn = games_dict[id]["whites_turn"]
+    else:
+        chess_game = game.Game(10, 8)
+        random_p = players.RandomPlayer(chess_game)
+        whites_turn = True
+        
+        games_dict[id] = {}
+        games_dict[id]["chess_game"] = chess_game
+        games_dict[id]["player"] = random_p
+        games_dict[id]["whites_turn"] = whites_turn
+        games_dict[id]["is_over"] = chess_game.get_game_ended()
+    
+    print("starting game between human and bot")
+
 def on_request(ch, method, props, body):
     '''
     Response to a request from server.js for
     a board state.
     '''
-    game_type = body
+    game_data = json.loads(body)
 
-    chess_board = play(game_type, props.correlation_id)
+    chess_board = play(game_data, props.correlation_id)
     if len(chess_board) == 0:
         response = "Game Over"
     else:
         response = chess_board.tolist()
-    print("Sent\n {}".format(response))
+    # print("Sent\n {}".format(response))
 
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
