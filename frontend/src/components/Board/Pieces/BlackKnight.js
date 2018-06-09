@@ -41,7 +41,7 @@ class BlackKnight extends Component {
 
     onControlledDrag = (e, position) => {
         let {x, y} = position;
-        console.log("position", position);
+        // console.log("position", position);
         let oldGridX = this.state.gridPosition.x;
         let oldGridY = this.state.gridPosition.y;
 

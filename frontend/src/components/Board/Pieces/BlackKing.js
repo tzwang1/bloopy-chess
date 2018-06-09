@@ -60,8 +60,8 @@ class BlackKing extends Component {
     
     render() {
         // console.log("Rendering black bishop");
-        console.log("Controlled Position", this.state.gridPosition);
-        console.log("Position", this.matrixPos);
+        // console.log("Controlled Position", this.state.gridPosition);
+        // console.log("Position", this.matrixPos);
         const gridPosition = this.state.gridPosition;
         const dragHandlers = {onStart: this.onStart, onStop: this.onControlledDragStop};
         return(

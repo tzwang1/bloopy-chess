@@ -12,6 +12,7 @@ class WhitePawn extends Component {
         }
         this.tileSize = props.tileSize;
         this.matrixPos = this.props.pos;
+        this.handleMove = props.handleMove;
     }
     
     onStart = () => {
@@ -41,7 +42,7 @@ class WhitePawn extends Component {
 
     onControlledDrag = (e, position) => {
         let {x, y} = position;
-        console.log("position", position);
+        // console.log("position", position);
         let oldGridX = this.state.gridPosition.x;
         let oldGridY = this.state.gridPosition.y;
 
@@ -53,6 +54,7 @@ class WhitePawn extends Component {
         let newRow = ((y - oldGridY) / this.tileSize) + this.matrixPos[0];
         let newCol = ((x - oldGridX) / this.tileSize) + this.matrixPos[1];
         this.matrixPos = [newRow, newCol];
+        this.handleMove([x, y], [newRow, newCol]);
     }
     
     onControlledDragStop = (e, position) => {
@@ -61,9 +63,9 @@ class WhitePawn extends Component {
     }
     
     render() {
-        console.log("Rendering black bishop");
-        console.log("Controlled Position", this.state.gridPosition);
-        console.log("Position", this.matrixPos);
+        // console.log("Rendering black bishop");
+        // console.log("Controlled Position", this.state.gridPosition);
+        // console.log("Position", this.matrixPos);
         const gridPosition = this.state.gridPosition;
         const dragHandlers = {onStart: this.onStart, onStop: this.onControlledDragStop};
         return(

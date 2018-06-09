@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 
 class WhiteRook extends Component {
     constructor(props) {
+        console.log(props);
         super(props)
         this.state = {
             gridPosition: {
@@ -41,7 +42,7 @@ class WhiteRook extends Component {
 
     onControlledDrag = (e, position) => {
         let {x, y} = position;
-        console.log("position", position);
+        // console.log("position", position);
         let oldGridX = this.state.gridPosition.x;
         let oldGridY = this.state.gridPosition.y;
 
@@ -61,9 +62,9 @@ class WhiteRook extends Component {
     }
     
     render() {
-        console.log("Rendering black bishop");
-        console.log("Controlled Position", this.state.gridPosition);
-        console.log("Position", this.matrixPos);
+        // console.log("Rendering black bishop");
+        // console.log("Controlled Position", this.state.gridPosition);
+        // console.log("Position", this.matrixPos);
         const gridPosition = this.state.gridPosition;
         const dragHandlers = {onStart: this.onStart, onStop: this.onControlledDragStop};
         return(
