@@ -5,6 +5,7 @@
   "dependencies": {
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-draggable": "^3.0.5",
     "react-scripts": "1.1.4",
     "tachyons": "^4.9.1"
   },

@@ -3,7 +3,6 @@ import Draggable from 'react-draggable';
 
 class WhiteRook extends Component {
     constructor(props) {
-        console.log(props);
         super(props)
         this.state = {
             gridPosition: {

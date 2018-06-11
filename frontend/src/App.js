@@ -22,21 +22,14 @@ class App extends Component {
     super();
     this.state = {
       current_screen: BOARD,
+      current_player: WHITE,
       game_playing: false,
-      board: [[-4, -2, -3, -5, -6, -3, -2, -4],
-              [-1, -1, -1, -1, -1, -1, -1, -1],
-              [ 0, 0, 0, 0, 0, 0, 0, 0],
-              [ 0, 0, 0, 0, 0, 0, 0, 0],
-              [ 0, 0, 0, 0, 0, 0, 0, 0], 
-              [ 0, 0, 0, 0, 0, 0, 0, 0], 
-              [ 1, 1, 1, 1, 1, 1, 1, 1], 
-              [ 4, 2, 3, 5, 6, 3, 2, 4]]
+      board: Utilities.defaultBoardState
     };
 
     this.game_data = {
       white_player: "",
       black_player: "",
-      current_player: WHITE,
       game_type: "",
       current_move: undefined
     };
@@ -44,40 +37,32 @@ class App extends Component {
     this.sessionID = ""
   }
 
+  handleMove = (old_pos, new_pos) => {
+    console.log(old_pos);
+    console.log(new_pos);
+  }
+
   onPlayClick = (game_type) => {
-    console.log("working");
-    console.log(game_type);
     switch(game_type) {
       case "twoRandomBots":
         this.game_data.black_player = BOT;
         this.game_data.white_player = BOT;
-        fetch(`http://localhost:5000/startGame/?game_type=${game_type}`, {
-          method: 'GET',
-          credentials: 'include'
-        })
-        .then(Utilities.handleErrors)
-        .then(response => response.json())
-        .then(data => {
-          this.setState({ board: data });
-        })
-        .catch(error => console.log(error))
         break;
+
       case "oneBotOneHuman":
-        console.log("Starting a game between a Bot and a human");
+        console.log("In onebotonehuman");
         this.game_data.black_player = BOT;
         this.game_data.white_player = HUMAN;
-        fetch(`http://localhost:5000/startGame/?game_type=${game_type}`,{
-          method: 'GET',
-          credentials: 'include'
-        })
-        .then(Utilities.handleErrors)
         break;
+
       default:
         break;
     }
     this.setState({ current_screen: BOARD });
     this.setState({ game_playing: true});
+    this.setState({ board: Utilities.defaultBoardState })
     this.game_data.game_type =  game_type;
+    console.log("I AM HEREEEEEEE!!!");
   }
 
   onStatsClick = () => {
@@ -94,11 +79,22 @@ class App extends Component {
 
   render() {
     console.log("rendering!");
-    console.log(this.state.game_playing);
-    let current_screen = <Board className={BOARD} board={this.state.board}/>;
-    // if(this.current_screen === BOARD){
-    //   let current_screen = <Board playing={this.state.game_playing}/>;
-    // }
+    console.log(this.state.board);
+    let current_screen;
+    if(this.state.current_screen === BOARD){
+      if(this.game_data.white_player === BOT && this.game_data.black_player === BOT) {
+        current_screen = <Board className={BOARD} board={this.state.board}/>;
+      } else if(this.game_data.white_player === HUMAN && this.game_data.black_player === BOT) {
+        console.log("White is a HUMAN and black is BOT");
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove}/>
+      } else if(this.game_data.white_player === BOT && this.game_data.black_player === HUMAN) {
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove}/>
+      } else if(this.game_data.white_player === HUMAN && this.game_data.black_player === HUMAN) {
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove}/>
+      } else {
+        current_screen = <Board className={BOARD} board={this.state.board}/>;
+      }
+    }
     return (
       <div className="App">
         <Navigation onPlayClick={this.onPlayClick} onStatsClick={this.onStatsClick} onSigninClick={this.onSigninClick}/>
@@ -109,9 +105,11 @@ class App extends Component {
   }
 
   componentDidUpdate() {
+    let current_player = this.state.current_player;
+    let {white_player, black_player, game_type, current_move} = this.game_data;
     console.log("Updating component");
     if(this.state.game_playing) {
-      switch (this.game_data.game_type) {
+      switch (game_type) {
         case "twoRandomBots":
           fetch("http://localhost:5000/playTwoRandomBots",{
             method: "GET",
@@ -120,7 +118,7 @@ class App extends Component {
           .then(Utilities.handleErrors)
           .then(response => response.json())
           .then(data => {
-            console.log("Data: ", data);
+            // console.log("Data: ", data);
             if(data === "Game Over") {
               this.setState({ game_playing: false});
             } else {
@@ -129,26 +127,28 @@ class App extends Component {
           });
           break;
         case "oneBotOneHuman":
-          let {white_player, black_player, current_player, game_type, current_move} = this.game_data;
-          if(current_player === WHITE && white_player === HUMAN)
-            fetch("http://localhost:5000/oneBotOneHuman",  {
-              method: "POST",
-              credentials: "include",
-              body: JSON.stringify({"move": {"old_pos": [1,1], "new_pos": [2,2] }}),
-              headers:{
-                'Content-Type': 'application/json'
-              }
-            })
-            .then(Utilities.handleErrors)
-            .then(response =>  response.json())
-            .then(data => {
-              console.log("Data: ", data);
-              if(data === "Game Over") {
-                this.setState({ game_playing: false});
-              } else {
-                this.setState({ board: data });
-              }
-            });
+          if((current_player === WHITE && white_player === HUMAN) || (current_player === BLACK && black_player === HUMAN)) {
+            if(current_move !== undefined) {
+              fetch("http://localhost:5000/oneBotOneHuman",  {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({"move": current_move}),
+                headers:{
+                  'Content-Type': 'application/json'
+                }
+              })
+              .then(Utilities.handleErrors)
+              .then(response =>  response.json())
+              .then(data => {
+                console.log("Data: ", data);
+                if(data === "Game Over") {
+                  this.setState({ game_playing: false});
+                } else {
+                  this.setState({ board: data });
+                }
+              });
+            }
+          }
           break
         //TODO: Add more cases for (Bot vs Human), and (Human vs Human)
         default:
