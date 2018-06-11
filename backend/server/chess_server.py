@@ -53,19 +53,17 @@ def play_two_bots(id):
     '''
     global games_dict
 
+    #import pdb; pdb.set_trace()
     if id in games_dict:
         chess_game = games_dict[id]["chess_game"]
         random_p = games_dict[id]["player"] 
-        whites_turn = games_dict[id]["whites_turn"]
     else:
         chess_game = game.Game(10, 8)
         random_p = players.RandomPlayer(chess_game)
-        whites_turn = True
         
         games_dict[id] = {}
         games_dict[id]["chess_game"] = chess_game
         games_dict[id]["player"] = random_p
-        games_dict[id]["whites_turn"] = whites_turn
         games_dict[id]["is_over"] = chess_game.get_game_ended()
 
     if not chess_game.get_game_ended():
@@ -74,17 +72,13 @@ def play_two_bots(id):
         random_p.promote_pawn()
         matrix_board = chess_game.convert_to_nums()
 
-        if not whites_turn:
-            matrix_board = np.flip(matrix_board, 1)
-            whites_turn = True
-        else:
-            whites_turn = False
-        
-        chess_board = np.transpose(matrix_board)
+        if chess_game.cur_player == -1:
+            matrix_board = np.flip(matrix_board, 0)
+
+        chess_board = matrix_board
 
         games_dict[id]["chess_game"] = chess_game
         games_dict[id]["player"] = random_p
-        games_dict[id]["whites_turn"] = whites_turn
         games_dict[id]["is_over"] = chess_game.get_game_ended()
     else:
         chess_board = np.array([])
@@ -97,16 +91,13 @@ def play_one_bot_one_human(id, game_data):
     if id in games_dict:
         chess_game = games_dict[id]["chess_game"]
         random_p = games_dict[id]["player"] 
-        whites_turn = games_dict[id]["whites_turn"]
     else:
         chess_game = game.Game(10, 8)
         random_p = players.RandomPlayer(chess_game)
-        whites_turn = True
         
         games_dict[id] = {}
         games_dict[id]["chess_game"] = chess_game
         games_dict[id]["player"] = random_p
-        games_dict[id]["whites_turn"] = whites_turn
         games_dict[id]["is_over"] = chess_game.get_game_ended()
     
     print("starting game between human and bot")
@@ -119,6 +110,7 @@ def on_request(ch, method, props, body):
     game_data = json.loads(body)
 
     chess_board = play(game_data, props.correlation_id)
+
     if len(chess_board) == 0:
         response = "Game Over"
     else:
@@ -131,7 +123,6 @@ def on_request(ch, method, props, body):
                                                          props.correlation_id),
                      body=json.dumps(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
-    print(" [x] Awaiting RPC requests")
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='rpc_queue')

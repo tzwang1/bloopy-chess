@@ -23,41 +23,41 @@ def initialize_pieces():
     b_pieces = {}
 
     # Initialize white pieces
-    w_pieces["w_K"] = piece.King((4,0), 1)
-    w_pieces["w_Q"] = piece.Queen((3,0), 1)
-    w_pieces["w_B_l"] = piece.Bishop((2,0), 1)
-    w_pieces["w_B_r"] = piece.Bishop((5,0), 1)
-    w_pieces["w_N_l"] = piece.Knight((1,0), 1)
-    w_pieces["w_N_r"] = piece.Knight((6,0), 1)
-    w_pieces["w_R_l"] = piece.Rook((0,0), 1)
-    w_pieces["w_R_r"] = piece.Rook((7,0), 1)
-    w_pieces["w_P_0"] = piece.Pawn((0,1), 1)
-    w_pieces["w_P_1"] = piece.Pawn((1,1), 1)
-    w_pieces["w_P_2"] = piece.Pawn((2,1), 1)
-    w_pieces["w_P_3"] = piece.Pawn((3,1), 1)
-    w_pieces["w_P_4"] = piece.Pawn((4,1), 1)
-    w_pieces["w_P_5"] = piece.Pawn((5,1), 1)
-    w_pieces["w_P_6"] = piece.Pawn((6,1), 1)
-    w_pieces["w_P_7"] = piece.Pawn((7,1), 1)
+    w_pieces["w_K"] = piece.King((7,4), 1)
+    w_pieces["w_Q"] = piece.Queen((7,3), 1)
+    w_pieces["w_B_l"] = piece.Bishop((7,2), 1)
+    w_pieces["w_B_r"] = piece.Bishop((7,5), 1)
+    w_pieces["w_N_l"] = piece.Knight((7,1), 1)
+    w_pieces["w_N_r"] = piece.Knight((7,6), 1)
+    w_pieces["w_R_l"] = piece.Rook((7,0), 1)
+    w_pieces["w_R_r"] = piece.Rook((7,7), 1)
+    w_pieces["w_P_0"] = piece.Pawn((6,0), 1)
+    w_pieces["w_P_1"] = piece.Pawn((6,1), 1)
+    w_pieces["w_P_2"] = piece.Pawn((6,2), 1)
+    w_pieces["w_P_3"] = piece.Pawn((6,3), 1)
+    w_pieces["w_P_4"] = piece.Pawn((6,4), 1)
+    w_pieces["w_P_5"] = piece.Pawn((6,5), 1)
+    w_pieces["w_P_6"] = piece.Pawn((6,6), 1)
+    w_pieces["w_P_7"] = piece.Pawn((6,7), 1)
     
     # Initialize black pieces
-    b_pieces["b_K"] = piece.King((4,7), -1)
-    b_pieces["b_Q"] = piece.Queen((3,7), -1)
-    b_pieces["b_B_l"] = piece.Bishop((2,7), -1)
-    b_pieces["b_B_r"] = piece.Bishop((5,7), -1)
-    b_pieces["b_N_l"] = piece.Knight((1,7), -1)
-    b_pieces["b_N_r"] = piece.Knight((6,7), -1)
-    b_pieces["b_R_l"] = piece.Rook((0,7), -1)
-    b_pieces["b_R_r"] = piece.Rook((7,7), -1)
-    b_pieces["b_P_0"] = piece.Pawn((0,6), -1)
-    b_pieces["b_P_1"] = piece.Pawn((1,6), -1)
-    b_pieces["b_P_2"] = piece.Pawn((2,6), -1)
-    b_pieces["b_P_3"] = piece.Pawn((3,6), -1)
-    b_pieces["b_P_4"] = piece.Pawn((4,6), -1)
-    b_pieces["b_P_5"] = piece.Pawn((5,6), -1)
-    b_pieces["b_P_6"] = piece.Pawn((6,6), -1)
-    b_pieces["b_P_7"] = piece.Pawn((7,6), -1)
-
+    b_pieces["b_K"] = piece.King((0,4), -1)
+    b_pieces["b_Q"] = piece.Queen((0,3), -1)
+    b_pieces["b_B_l"] = piece.Bishop((0,2), -1)
+    b_pieces["b_B_r"] = piece.Bishop((0,5), -1)
+    b_pieces["b_N_l"] = piece.Knight((0,1), -1)
+    b_pieces["b_N_r"] = piece.Knight((0,6), -1)
+    b_pieces["b_R_l"] = piece.Rook((0,0), -1)
+    b_pieces["b_R_r"] = piece.Rook((0,7), -1)
+    b_pieces["b_P_0"] = piece.Pawn((1,0), -1)
+    b_pieces["b_P_1"] = piece.Pawn((1,1), -1)
+    b_pieces["b_P_2"] = piece.Pawn((1,2), -1)
+    b_pieces["b_P_3"] = piece.Pawn((1,3), -1)
+    b_pieces["b_P_4"] = piece.Pawn((1,4), -1)
+    b_pieces["b_P_5"] = piece.Pawn((1,5), -1)
+    b_pieces["b_P_6"] = piece.Pawn((1,6), -1)
+    b_pieces["b_P_7"] = piece.Pawn((1,7), -1)
+   
     all_pieces["w_pieces"] = w_pieces
     all_pieces["b_pieces"] = b_pieces
 
@@ -158,26 +158,26 @@ class Board():
         if (new_pos[0] < 0 or new_pos[0] > self.n-1 or new_pos[1] < 0 or new_pos[1] > self.n-1): 
             return False
  
-        if action == (0,2):
-            if pos[1] != 1:
+        if action == (-2,0):
+            if pos[0] != 6:
                 return False
             
-            if self.board[new_pos[0], new_pos[1]-1] != None or self.board[new_pos[0], new_pos[1]] != None:
+            if self.board[new_pos[0]+1, new_pos[1]] != None or self.board[new_pos[0], new_pos[1]] != None:
                 return False
             else:
                 return self.king_not_vulnerable(pos, new_pos, player)
 
-        elif action == (0,1):
+        elif action == (-1,0):
             if self.board[new_pos[0], new_pos[1]] != None:
                 return False
             else:
                 return self.king_not_vulnerable(pos, new_pos, player)
             
         # Action to capture an opponent piece
-        elif action == (-1,1) or action == (1,1):
+        elif action == (-1,1) or action == (-1,-1):
             other_piece = self.board[new_pos[0], new_pos[1]]
             if other_piece == None:
-                enpassant_piece = self.board[new_pos[0], new_pos[1]-1]
+                enpassant_piece = self.board[new_pos[0]+1, new_pos[1]]
                 if enpassant_piece == None:
                     return False
                 else:
@@ -222,6 +222,12 @@ class Board():
         '''
         if self.king_in_check(player) or self.king_in_checkmate(player):
             return False
+        
+        if action != (0,-2) or action != (0,2):
+            return False
+
+        if king.has_moved or rook.has_moved:
+            return False
 
         if player == 1:
             king = self.pieces["w_pieces"]["w_K"]
@@ -242,18 +248,15 @@ class Board():
             if action == (0,-2):
                 if "b_R_l" in self.pieces["b_pieces"]:
                     rook = self.pieces["b_pieces"]["b_R_l"]
-                    half_action = (0, 1)
+                    half_action = (0, -1)
                 else:
                     return False
             else:
                 if "b_R_r" in self.pieces["b_pieces"]:
                     rook = self.pieces["b_pieces"]["b_R_r"]
-                    half_action = (0, -1)
+                    half_action = (0, 1)
                 else:
                     return False
-            
-        if king.has_moved or rook.has_moved:
-            return False
         
         moves = [half_action, action]
 
@@ -347,49 +350,56 @@ class Board():
         cur_pos = cur_piece.pos
 
         if isinstance(cur_piece, piece.King):
+            # Handles case when action is to castle
             if action == (0,2) or action == (0,-2):
                 if cur_piece.player == 1:
                     pieces = self.pieces["w_pieces"]
                     if action == (0,2):
                         if "w_R_r" in pieces:
                             rook = pieces["w_R_r"]
+                            new_rook_pos = (cur_pos[0], cur_pos[1]+1)
                         else:
-                            return False
+                            return
                     
                     if action == (0,-2):
                         if "w_R_l" in pieces:
                             rook = pieces["w_R_l"]
+                            new_rook_pos = (cur_pos[0], cur_pos[1]-1)
                         else:
-                            return False
+                            return
                 else:
                     pieces = self.pieces["b_pieces"]
                     if action == (0,2):
                         if "b_R_r" in pieces:
                             rook = self.pieces["b_pieces"]["b_R_r"]
+                            new_rook_pos = (cur_pos[0], cur_pos[1]+1)
                         else:
-                            return False
+                            return
                     
                     if action == (0,-2):
                         if "b_R_l" in pieces:
                             rook = self.pieces["b_pieces"]["b_R_l"]
+                            new_rook_pos = (cur_pos[0], cur_pos[1]-1)
                         else:
-                            return False
+                            return
 
                 new_king_pos = (cur_pos[0]+action[0], cur_pos[1]+action[1])
                 cur_piece.pos = new_king_pos
-                new_rook_pos = cur_pos[0]+1, cur_pos[1]
                 rook.pos = new_rook_pos
                 cur_piece.has_moved = True
                 rook.has_moved = True
 
                 self.board[new_king_pos[0], new_king_pos[1]] = cur_piece
                 self.board[rook_pos[0], rook_pos[1]] = rook
+
+                return
         
+        # All other types of actions, excluding castling
         if isinstance(cur_piece, piece.Rook):
             cur_piece.has_moved = True
 
         if isinstance(cur_piece, piece.Pawn):
-            if action == (0,2):
+            if action == (-2,0):
                 cur_piece.enpassant = True
             else:
                 cur_piece.enpassant = False
@@ -424,7 +434,7 @@ class Board():
             cur_pos = cur_piece.pos
 
             #Switch piece from one side to the other
-            new_pos = (cur_pos[0], self.n-1 - cur_pos[1])
+            new_pos = (self.n-1 - cur_pos[0], cur_pos[1])
             cur_piece.pos = new_pos
 
         for key in b_pieces:
@@ -432,7 +442,7 @@ class Board():
             cur_pos = cur_piece.pos
     
             #switch piece from one side to the other
-            new_pos = (cur_pos[0], self.n-1 - cur_pos[1])
+            new_pos = (self.n-1 - cur_pos[0], cur_pos[1])
             cur_piece.pos = new_pos
 
         self.board = initialize_board(all_pieces, self.n)
@@ -522,21 +532,21 @@ class Board():
         Promotes a pawn if there is a pawn in the last row or first row
         '''
         for i in range(self.n):
-            if isinstance(self.board[i][self.n-1], piece.Pawn):
-                cur_player = self.board[i][self.n-1].player
-                knight = piece.Knight((i,self.n-1), cur_player)
-                bishop = piece.Bishop((i,self.n-1), cur_player)
-                rook = piece.Rook((i,self.n-1), cur_player)
-                queen = piece.Queen((i,self.n-1), cur_player)
+            if isinstance(self.board[self.n-1][i], piece.Pawn):
+                cur_player = self.board[self.n-1][i].player
+                knight = piece.Knight((self.n-1,i), cur_player)
+                bishop = piece.Bishop((self.n-1,i), cur_player)
+                rook = piece.Rook((self.n-1,i), cur_player)
+                queen = piece.Queen((self.n-1,i), cur_player)
 
                 return [knight, bishop, rook, queen]
             
-            if isinstance(self.board[i][0], piece.Pawn):
-                cur_player = self.board[i][0].player
-                knight = piece.Knight((i,0), cur_player)
-                bishop = piece.Bishop((i,0), cur_player)
-                rook = piece.Rook((i,0), cur_player)
-                queen = piece.Queen((i,0), cur_player)
+            if isinstance(self.board[0][i], piece.Pawn):
+                cur_player = self.board[0][i].player
+                knight = piece.Knight((0,i), cur_player)
+                bishop = piece.Bishop((0,i), cur_player)
+                rook = piece.Rook((0,i), cur_player)
+                queen = piece.Queen((0,i), cur_player)
 
                 return [knight, bishop, rook, queen]
         

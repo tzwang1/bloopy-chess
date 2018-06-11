@@ -11,11 +11,11 @@ import ChessPlayers as players
 # ============================================================================
 
 def test_chess_pieces():
-    w_king = piece.King((4,0), 1)
-    b_king = piece.King((4,7), -1)
+    w_king = piece.King((7,4), 1)
+    b_king = piece.King((0,4), -1)
 
-    assert w_king.pos == (4,0)
-    assert b_king.pos == (4,7)
+    assert w_king.pos == (7,4)
+    assert b_king.pos == (0,4)
     assert w_king.player == 1
     assert b_king.player == -1
     assert w_king.has_moved == False
@@ -30,9 +30,9 @@ def test_chess_logic():
     assert len(board.pieces["w_pieces"]) == 16
     assert len(board.pieces["b_pieces"]) == 16
     assert len(board.board) ==  8
-    assert isinstance(board.board[4,0], piece.King) == True
-    assert isinstance(board.board[4,7], piece.King) == True
-    assert isinstance(board.board[1,0], piece.Knight) == True
+    assert isinstance(board.board[7,4], piece.King) == True
+    assert isinstance(board.board[0,4], piece.King) == True
+    assert isinstance(board.board[0,1], piece.Knight) == True
     assert isinstance(board.board[0,0], piece.Rook) == True
     assert board.board[5,5] == None
 
@@ -40,34 +40,34 @@ def test_execute_action():
 
     board = logic.Board(8)
     w_P_0 = board.pieces["w_pieces"]["w_P_0"]
-    action = (0,2)
+    action = (-2,0)
     board.execute_action([w_P_0, action])
-    assert w_P_0.pos == (0, 3)
-    assert board.board[0,3] == w_P_0
+    assert w_P_0.pos == (4, 0)
+    assert board.board[4,0] == w_P_0
 
     board.switch_orientation()
     b_P_1 = board.pieces["b_pieces"]["b_P_1"]
-    action = (0,2)
+    action = (-2,0)
     board.execute_action([b_P_1, action])
-    assert b_P_1.pos == (1, 3)
-    assert board.board[1,3] == b_P_1
+    assert b_P_1.pos == (4, 1)
+    assert board.board[4,1] == b_P_1
 
     board.switch_orientation()
-    action = (1,1)
+    action = (-1,1)
     board.execute_action([w_P_0, action])
-    assert w_P_0.pos == (1,4)
-    assert board.board[0,3] == None
+    assert w_P_0.pos == (3,1)
+    assert board.board[4,0] == None
 
 def test_switch_orientation():
     board = logic.Board(8)
     w_P_0 = board.pieces["w_pieces"]["w_P_0"]
     
     cur_pos = w_P_0.pos
-    assert cur_pos == (0,1)
+    assert cur_pos == (6,0)
     board.switch_orientation()
     
     cur_pos = w_P_0.pos
-    assert cur_pos == (0,6)
+    assert cur_pos == (1,0)
 
 def test_check_legal():
     # Creating pieces, and a toy board of size 4x4
@@ -94,8 +94,8 @@ def test_check_legal_Pawn():
     all_pieces = {}
     w_pieces = {}
     b_pieces = {}
-    w_pieces["w_P_0"] = piece.Pawn((0,1), 1)
-    b_pieces["b_P_1"] = piece.Pawn((1,6), -1)
+    w_pieces["w_P_0"] = piece.Pawn((6,0), 1)
+    b_pieces["b_P_1"] = piece.Pawn((1,1), -1)
     all_pieces["w_pieces"] = w_pieces
     all_pieces["b_pieces"] = b_pieces
 
@@ -106,7 +106,7 @@ def test_check_legal_Pawn():
     test_board.n = n
     legal_actions = test_board.get_legal_actions(1)
     
-    assert legal_actions[0][1] == [(0, 1), (0, 2)]
+    assert legal_actions[0][1] == [(-1, 0), (-2, 0)]
     w_pawn = legal_actions[0][0]
     action = legal_actions[0][1][1]
     move = (w_pawn, action)
@@ -120,7 +120,7 @@ def test_check_legal_Pawn():
     
     test_board.switch_orientation()
     legal_actions = test_board.get_legal_actions(-1)
-    assert legal_actions[0][1] == [(0,1), (0,2)]
+    assert legal_actions[0][1] == [(-1,0), (-2,0)]
 
     b_pawn = legal_actions[0][0]
     action = legal_actions[0][1][1]
@@ -129,20 +129,18 @@ def test_check_legal_Pawn():
 
     test_board.switch_orientation()
     legal_actions = test_board.get_legal_actions(1)
-    
-    assert legal_actions[0][1] == [(1,1), (0,1)]
+
+    assert legal_actions[0][1] == [(-1,1), (-1,0)]
     test_board.switch_orientation()
     
     b_pawn = b_pieces["b_P_1"]
-    b_pawn.pos = (1,2)
+    b_pawn.pos = (5,1)
 
-    test_board.board[1,2] = b_pawn
-    test_board.board[1,3] = None
-    
+    test_board.board[5,1] = b_pawn
     test_board.switch_orientation()
     legal_actions = test_board.get_legal_actions(1)
     
-    assert legal_actions[0][1] == [(1,1), (0,1)]
+    assert legal_actions[0][1] == [(-1,1), (-1,0)]
 
 def test_check_legal_King():
     n = 4
@@ -273,43 +271,43 @@ def test_chess_game():
 
     board = test_game.board
     assert isinstance(board.pieces["w_pieces"]["w_K"], piece.King) == True
-    assert board.pieces["w_pieces"]["w_K"].pos == (4,0)
+    assert board.pieces["w_pieces"]["w_K"].pos == (7,4)
 
 def test_get_next_state():
     test_game = game.Game(10, 8)
     legal_actions = test_game.board.get_legal_actions(test_game.cur_player)
     move = (legal_actions[0][0], legal_actions[0][1][1])
     test_game.get_next_state(1, move)
-    assert isinstance(test_game.board.board[2,5], piece.Knight) == True
-    assert test_game.board.pieces["w_pieces"]["w_N_l"].pos == (2,5)
+    assert isinstance(test_game.board.board[2,0], piece.Knight) == True
+    assert test_game.board.pieces["w_pieces"]["w_N_l"].pos == (2,0)
     assert test_game.cur_player == -1
 
 def test_convert_to_nums():
     test_game = game.Game(10, 8)
     matrix_board = test_game.convert_to_nums()
     assert np.array_equal(matrix_board, 
-    np.array([[ 4.,  1.,  0.,  0.,  0.,  0., -1., -4.],
-              [ 2.,  1.,  0.,  0.,  0.,  0., -1., -2.],
-              [ 3.,  1.,  0.,  0.,  0.,  0., -1., -3.],
-              [ 5.,  1.,  0.,  0.,  0.,  0., -1., -5.],
-              [ 6.,  1.,  0.,  0.,  0.,  0., -1., -6.],
-              [ 3.,  1.,  0.,  0.,  0.,  0., -1., -3.],
-              [ 2.,  1.,  0.,  0.,  0.,  0., -1., -2.],
-              [ 4.,  1.,  0.,  0.,  0.,  0., -1., -4.]])) == True
-
+    np.array([[-4, -2, -3, -5, -6, -3, -2, -4],
+              [-1, -1, -1, -1, -1, -1, -1, -1],
+              [ 0, 0, 0, 0, 0, 0, 0, 0],
+              [ 0, 0, 0, 0, 0, 0, 0, 0],
+              [ 0, 0, 0, 0, 0, 0, 0, 0], 
+              [ 0, 0, 0, 0, 0, 0, 0, 0], 
+              [ 1, 1, 1, 1, 1, 1, 1, 1], 
+              [ 4, 2, 3, 5, 6, 3, 2, 4]])) == True
+                        
     legal_actions = test_game.board.get_legal_actions(test_game.cur_player)
     move = (legal_actions[0][0], legal_actions[0][1][1])
     test_game.get_next_state(test_game.cur_player, move)
     matrix_board = test_game.convert_to_nums()
     assert np.array_equal(matrix_board, 
-    np.array([[ -4.,  -1.,  0.,  0.,  0.,  0., 1., 4.],
-              [ -2.,  -1.,  0.,  0.,  0.,  0., 1., 0.],
-              [ -3.,  -1.,  0.,  0.,  0.,  2., 1., 3.],
-              [ -5.,  -1.,  0.,  0.,  0.,  0., 1., 5.],
-              [ -6.,  -1.,  0.,  0.,  0.,  0., 1., 6.],
-              [ -3.,  -1.,  0.,  0.,  0.,  0., 1., 3.],
-              [ -2.,  -1.,  0.,  0.,  0.,  0., 1., 2.],
-              [ -4.,  -1.,  0.,  0.,  0.,  0., 1., 4.]])) == True
+    np.array([[4, 0, 3, 5, 6, 3, 2, 4],
+              [1, 1, 1, 1, 1, 1, 1, 1],
+              [ 2, 0, 0, 0, 0, 0, 0, 0],
+              [ 0, 0, 0, 0, 0, 0, 0, 0],
+              [ 0, 0, 0, 0, 0, 0, 0, 0], 
+              [ 0, 0, 0, 0, 0, 0, 0, 0], 
+              [ -1, -1, -1, -1, -1, -1, -1, -1], 
+              [ -4, -2, -3, -5, -6, -3, -2, -4]])) == True
 
 # ============================================================================
 # Unit tests for ChessPlayers.py
@@ -322,7 +320,7 @@ def test_random_player():
     move = rand_player.play()
    
     assert isinstance(move[0], piece.Pawn) == True
-    assert move[1] == (0,1)
+    assert move[1] == (-1,0)
 
 if __name__=="__main__":
     
