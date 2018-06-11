@@ -42,34 +42,6 @@ app.get('/', function(req, res) {
     res.send("Home page");
 });
 
-app.get('/startGame', function(req, res) {
-    console.log("Received request for starting a game");
-    game_type = req.query.game_type;
-    let dataToSend;
-    switch(game_type){
-        case "twoRandomBots":
-            console.log("Game type twoRandomBots");
-            fetch('http://localhost:5000/playTwoRandomBots',{
-                method: "GET",
-                credentials: 'include'
-            })
-            .then(Utilities.handleErrors)
-            .then(data => {
-                dataToSend = data;
-            })
-            .catch(error => console.log(error));
-            break;
-        case "oneBotOneHuman":
-            dataToSend = Utilities.defaultBoardState;
-            break;
-
-        default:
-            dataToSend = Utilities.defaultBoardState;
-            break;
-    }
-    return res.send(dataToSend);
-})
-
 app.get('/playTwoRandomBots', function(req, res){
     amqp.connect(AMQP_HOST, function(err, conn) {
         conn.createChannel(function(err, ch) {
@@ -79,7 +51,6 @@ app.get('/playTwoRandomBots', function(req, res){
 
             ch.consume(q.queue, function(msg) {
                 if (msg.properties.correlationId == corr) {
-                    // console.log(JSON.parse(msg.content));
                     res.send(msg.content);
                 }
             }, {noAck: true});
