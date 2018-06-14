@@ -30,8 +30,8 @@ const DarkTile = (props) => {
             whiteDisabled = false;
         }
     } 
-
-    console.log(" black pieces on Darktiles have current disabled value: ", blackDisabled);
+    console.log("The current player is: ", props.curPlayer);
+    console.log("white pieces on Darktiles have current disabled value: ", whiteDisabled);
 
     switch(props.piece) {
         case -1:

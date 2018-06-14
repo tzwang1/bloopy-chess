@@ -89,16 +89,17 @@ class App extends Component {
       
       } else if(this.game_data.white_player === HUMAN && this.game_data.black_player === BOT) {
         console.log("White is a HUMAN and black is BOT");
-        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} curPlayer={this.state.current_player}/>
       
       } else if(this.game_data.white_player === BOT && this.game_data.black_player === HUMAN) {
-        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} curPlayer={this.state.current_player}/>
       
       } else if(this.game_data.white_player === HUMAN && this.game_data.black_player === HUMAN) {
-        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} curPlayer={this.state.current_player}/>
       
       } else {
-        current_screen = <Board className={BOARD} board={this.state.board} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>;
+        console.log("The current player is: ", this.state.current_player);
+        current_screen = <Board className={BOARD} board={this.state.board} gamePlaying={this.state.game_playing} curPlayer={this.state.current_player}/>;
       }
     }
     return (
