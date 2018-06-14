@@ -4,9 +4,9 @@ import DarkTile from './Tile/DarkTile';
 import LightTile from './Tile/LightTile';
 
 const Board = (props) => {
-    console.log("Board props", props);
+    // console.log("Board props", props);
     let board = props.board;
-    console.log(board);
+    // console.log(board);
     let board_component = [];
     for(let i = 0; i < 8; i++) {
         for(let j = 0; j < 8; j++) {

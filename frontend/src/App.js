@@ -81,7 +81,7 @@ class App extends Component {
 
   render() {
     console.log("rendering!");
-    console.log(this.state.board);
+    // console.log(this.state.board);
     let current_screen;
     if(this.state.current_screen === BOARD){
       if(this.game_data.white_player === BOT && this.game_data.black_player === BOT) {

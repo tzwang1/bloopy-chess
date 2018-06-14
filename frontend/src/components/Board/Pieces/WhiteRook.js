@@ -52,7 +52,9 @@ class WhiteRook extends Component {
     
         let newRow = ((y - oldGridY) / this.tileSize) + this.matrixPos[0];
         let newCol = ((x - oldGridX) / this.tileSize) + this.matrixPos[1];
+        let oldMatrixPos = this.matrixPos;
         this.matrixPos = [newRow, newCol];
+        this.props.handleMove(oldMatrixPos, this.matrixPos);
     }
     
     onControlledDragStop = (e, position) => {

@@ -54,7 +54,6 @@ class WhitePawn extends Component {
         let newCol = ((x - oldGridX) / this.tileSize) + this.matrixPos[1];
         let oldMatrixPos = this.matrixPos;
         this.matrixPos = [newRow, newCol];
-        console.log(this.props.handleMove);
         this.props.handleMove(oldMatrixPos, this.matrixPos);
     }
     
