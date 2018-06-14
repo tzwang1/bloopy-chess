@@ -19,42 +19,56 @@ import TileSize from './TileSize';
 const DarkTile = (props) => {
     // console.log("DarkTile", props);
     let piece;
+    let whiteDisabled = true;
+    let blackDisabled = true;
+    if(props.gamePlaying === true) {
+        if(props.curPlayer === "black"){
+            blackDisabled = false;
+            whiteDisabled = true;
+        } else if(props.curPlayer === "white") {
+            blackDisabled = true;
+            whiteDisabled = false;
+        }
+    } 
+
+    console.log(" black pieces on Darktiles have current disabled value: ", blackDisabled);
+
     switch(props.piece) {
         case -1:
-            piece = <BlackPawn pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <BlackPawn pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={blackDisabled}/>;
             break;
         case -2:
-            piece = <BlackKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <BlackKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={blackDisabled}/>;
             break;
         case -3:
-            piece = <BlackBishop pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <BlackBishop pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={blackDisabled}/>;
             break;
         case -4:
-            piece = <BlackRook pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <BlackRook pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={blackDisabled}/>;
             break;
         case -5:
-            piece = <BlackQueen pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <BlackQueen pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={blackDisabled}/>;
             break;
         case -6:
-            piece = <BlackKing pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <BlackKing pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={blackDisabled}/>;
             break;
         case 1:
-            piece = <WhitePawn pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <WhitePawn pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
             break;
         case 2:
-            piece = <WhiteKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <WhiteKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
             break;
         case 3:
-            piece = <WhiteBishop pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <WhiteBishop pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
             break;
         case 4:
-            piece = <WhiteRook pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <WhiteRook pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
             break;
         case 5:
-            piece = <WhiteQueen pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <WhiteQueen pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
             break;
         case 6:
-            piece = <WhiteKing pos={props.pos} tileSize={TileSize} handleMove={props.handleMove}/>;
+            piece = <WhiteKing pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
             break;
         default:
     }

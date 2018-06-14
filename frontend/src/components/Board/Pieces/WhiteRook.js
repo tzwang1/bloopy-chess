@@ -66,10 +66,11 @@ class WhiteRook extends Component {
         // console.log("Rendering black bishop");
         // console.log("Controlled Position", this.state.gridPosition);
         // console.log("Position", this.matrixPos);
+        console.log("Black rook has current draggable value: ", this.props.disabled);
         const gridPosition = this.state.gridPosition;
         const dragHandlers = {onStart: this.onStart, onStop: this.onControlledDragStop};
         return(
-            <Draggable disabled={false} position={gridPosition} bounds="parent" {...dragHandlers}>
+            <Draggable disabled={this.props.disabled} position={gridPosition} bounds="parent" {...dragHandlers}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" height="100%">
                     <g
                         fill="#fff"

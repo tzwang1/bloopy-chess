@@ -86,22 +86,25 @@ class App extends Component {
     if(this.state.current_screen === BOARD){
       if(this.game_data.white_player === BOT && this.game_data.black_player === BOT) {
         current_screen = <Board className={BOARD} board={this.state.board}/>;
+      
       } else if(this.game_data.white_player === HUMAN && this.game_data.black_player === BOT) {
         console.log("White is a HUMAN and black is BOT");
-        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove}/>
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>
+      
       } else if(this.game_data.white_player === BOT && this.game_data.black_player === HUMAN) {
-        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove}/>
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>
+      
       } else if(this.game_data.white_player === HUMAN && this.game_data.black_player === HUMAN) {
-        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove}/>
+        current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>
+      
       } else {
-        current_screen = <Board className={BOARD} board={this.state.board}/>;
+        current_screen = <Board className={BOARD} board={this.state.board} gamePlaying={this.state.game_playing} currentPlayer={this.state.current_player}/>;
       }
     }
     return (
       <div className="App">
         <Navigation onPlayClick={this.onPlayClick} onStatsClick={this.onStatsClick} onSigninClick={this.onSigninClick}/>
         {current_screen}
-        <div className="f5">Icons made by <a href="https://www.flaticon.com/authors/ddara" title="dDara">dDara</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC 3.0 BY</a></div>
       </div>
     );
   }
