@@ -47,7 +47,7 @@ app.get('/playTwoRandomBots', function(req, res){
         conn.createChannel(function(err, ch) {
             ch.assertQueue('', {exclusive: true}, function(err, q) {
             let corr = req.sessionID;
-            let game_type = "two random bots";
+            let game_type = "twoRandomBots";
 
             ch.consume(q.queue, function(msg) {
                 if (msg.properties.correlationId == corr) {
@@ -70,7 +70,6 @@ app.post('/oneBotOneHuman', function(req, res) {
         conn.createChannel(function(err, ch) {
             ch.assertQueue('', {exclusive: true}, function(err, q) {
             let corr = req.sessionID;
-            let game_type = "one bot one human";
             let human_player = req.body.human_player;
 
             ch.consume(q.queue, function(msg) {
@@ -79,10 +78,11 @@ app.post('/oneBotOneHuman', function(req, res) {
                     res.send(msg.content);
                 }
             }, {noAck: true});
+            console.log("Request body: ", req.body);
             console.log(req.body.move);
-            game_data = {"game_type": game_type, "move": req.body.move }
+            // game_data = {"game_type": game_type, "move": req.body.move }
             ch.sendToQueue('rpc_queue',
-            new Buffer.from(JSON.stringify(game_data)),
+            new Buffer.from(JSON.stringify(req.body)),
             { correlationId: corr, replyTo: q.queue });
             });
         });

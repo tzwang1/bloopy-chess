@@ -1,11 +1,14 @@
 import numpy as np
 
-class RandomPlayer():
+class Player():
     def __init__(self, game):
         self.game = game
 
+class RandomPlayer(Player):
+
     def play(self):
         legal_moves = self.game.board.get_legal_actions(self.game.cur_player)
+    
         num_pieces = len(legal_moves)
 
         rand_piece = np.random.randint(num_pieces)
@@ -42,7 +45,7 @@ class RandomPlayer():
         
 
 
-class AlwaysAttackingPlayer():
+class AlwaysAttackingPlayer(Player):
     def __init__(self, game):
         self.game = game
     

@@ -24,7 +24,8 @@ class App extends Component {
       current_screen: BOARD,
       current_player: WHITE,
       game_playing: false,
-      board: Utilities.defaultBoardState
+      board: Utilities.defaultBoardState,
+      render: false // Set this value whenever you need to force a render()
     };
 
     this.game_data = {
@@ -40,6 +41,8 @@ class App extends Component {
   handleMove = (old_pos, new_pos) => {
     console.log(old_pos);
     console.log(new_pos);
+    this.game_data.current_move = [old_pos, new_pos];
+    this.setState({render: true});
   }
 
   onPlayClick = (game_type) => {
@@ -50,7 +53,6 @@ class App extends Component {
         break;
 
       case "oneBotOneHuman":
-        console.log("In onebotonehuman");
         this.game_data.black_player = BOT;
         this.game_data.white_player = HUMAN;
         break;
@@ -62,7 +64,7 @@ class App extends Component {
     this.setState({ game_playing: true});
     this.setState({ board: Utilities.defaultBoardState })
     this.game_data.game_type =  game_type;
-    console.log("I AM HEREEEEEEE!!!");
+
   }
 
   onStatsClick = () => {
@@ -132,7 +134,7 @@ class App extends Component {
               fetch("http://localhost:5000/oneBotOneHuman",  {
                 method: "POST",
                 credentials: "include",
-                body: JSON.stringify({"move": current_move}),
+                body: JSON.stringify({"game_type": game_type, "move": current_move}),
                 headers:{
                   'Content-Type': 'application/json'
                 }
@@ -147,6 +149,7 @@ class App extends Component {
                   this.setState({ board: data });
                 }
               });
+              this.game_data.current_move = undefined;
             }
           }
           break
