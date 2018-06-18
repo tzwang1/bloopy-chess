@@ -145,9 +145,9 @@ class Board():
         # New position has a piece
         other_piece = self.board[new_pos[0], new_pos[1]]
         if other_piece.player == player:
-            return False, False
+            return False, True
         else:
-            return self.king_not_vulnerable(pos, new_pos, player), False
+            return self.king_not_vulnerable(pos, new_pos, player), True
 
     
     def check_legal_pawn(self, action, player, pos):
