@@ -168,7 +168,7 @@ def test_king_in_check():
     b_pieces = {}
 
     w_pieces["w_K"] = piece.King((1,1), 1)
-    b_pieces["b_Q"] = piece.Rook((3,1), -1)
+    b_pieces["b_Q"] = piece.Queen((3,1), -1)
     all_pieces["w_pieces"] = w_pieces
     all_pieces["b_pieces"] = b_pieces
     
@@ -180,32 +180,74 @@ def test_king_in_check():
     
     assert test_board.king_in_check(1) == True
 
-def test_king_in_checkmate():
     n = 4
     all_pieces = {}
     w_pieces = {}
     b_pieces = {}
 
-    w_pieces["w_K"] = piece.King((0,0), 1)
+    w_pieces["w_K"] = piece.King((0,1), 1)
+    w_pieces["w_Q"] = piece.Queen((0,2), 1)
     b_pieces["b_Q"] = piece.Queen((1,1), -1)
-    b_pieces["b_B_l"] = piece.Bishop((3,3), -1)
+    b_pieces["b_R_r"] = piece.Rook((3,1), -1)
+
     all_pieces["w_pieces"] = w_pieces
     all_pieces["b_pieces"] = b_pieces
-
+    
     board = logic.initialize_board(all_pieces, n)
     test_board = logic.Board(8)
-    
-    # King is in checkmate
     test_board.pieces = all_pieces
     test_board.board = board
-    test_board.n = n
-    assert test_board.king_in_checkmate(1) == True
+    test_board.n = n 
+
+    assert test_board.king_in_check(1) == True
+
+def test_king_in_checkmate():
+    # n = 4
+    # all_pieces = {}
+    # w_pieces = {}
+    # b_pieces = {}
+
+    # w_pieces["w_K"] = piece.King((0,0), 1)
+    # b_pieces["b_Q"] = piece.Queen((1,1), -1)
+    # b_pieces["b_B_l"] = piece.Bishop((3,3), -1)
+    # all_pieces["w_pieces"] = w_pieces
+    # all_pieces["b_pieces"] = b_pieces
+
+    # board = logic.initialize_board(all_pieces, n)
+    # test_board = logic.Board(8)
     
-    # Move Queen so king is not in checkmate
-    queen = test_board.pieces["b_pieces"]["b_Q"]
-    queen.pos = (1,3)
-    test_board.board[1,1] = None
-    test_board.board[1,3] = queen
+    # # King is in checkmate
+    # test_board.pieces = all_pieces
+    # test_board.board = board
+    # test_board.n = n
+    # assert test_board.king_in_checkmate(1) == True
+    
+    # # Move Queen so king is not in checkmate
+    # queen = test_board.pieces["b_pieces"]["b_Q"]
+    # queen.pos = (1,3)
+    # test_board.board[1,1] = None
+    # test_board.board[1,3] = queen
+    # assert test_board.king_in_checkmate(1) == False
+
+    n = 4
+    all_pieces = {}
+    w_pieces = {}
+    b_pieces = {}
+
+    w_pieces["w_K"] = piece.King((0,1), 1)
+    w_pieces["w_Q"] = piece.Queen((0,2), 1)
+    b_pieces["b_Q"] = piece.Queen((1,1), -1)
+    b_pieces["b_R_r"] = piece.Rook((3,1), -1)
+
+    all_pieces["w_pieces"] = w_pieces
+    all_pieces["b_pieces"] = b_pieces
+    
+    board = logic.initialize_board(all_pieces, n)
+    test_board = logic.Board(8)
+    test_board.pieces = all_pieces
+    test_board.board = board
+    test_board.n = n 
+    
     assert test_board.king_in_checkmate(1) == False
 
 def test_stalemate():
@@ -373,23 +415,23 @@ if __name__=="__main__":
 # ============================================================================
 # Unit tests for ChessPieces.py
 # ============================================================================
-    print("#" * 50)
-    print("Running tests for ChessPieces.py")
-    test_chess_pieces()
-    print("Passed tests for ChessPieces.py")
-    print("#" * 50)
+#     print("#" * 50)
+#     print("Running tests for ChessPieces.py")
+#     test_chess_pieces()
+#     print("Passed tests for ChessPieces.py")
+#     print("#" * 50)
     
-# ============================================================================
-# Unit tests for ChessLogic.py
-# ============================================================================
-    print("Running tests for ChessLogic.py")
-    test_chess_logic()
-    print("\tRunning unit test for execute_action")
-    test_execute_action()
-    print("\tRunning unit tests for switch_orientation")
-    test_switch_orientation()
-    print("\tRunning unit test for king_in_check")
-    test_king_in_check()
+# # ============================================================================
+# # Unit tests for ChessLogic.py
+# # ============================================================================
+#     print("Running tests for ChessLogic.py")
+#     test_chess_logic()
+#     print("\tRunning unit test for execute_action")
+#     test_execute_action()
+#     print("\tRunning unit tests for switch_orientation")
+#     test_switch_orientation()
+#     print("\tRunning unit test for king_in_check")
+#     test_king_in_check()
     print("\tRunning unit test for king_in_checkmate")
     test_king_in_checkmate()
     print("\tRunning unit test for check_legal")

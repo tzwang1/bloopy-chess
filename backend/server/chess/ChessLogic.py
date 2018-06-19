@@ -106,9 +106,12 @@ class Board():
             pieces = self.pieces["w_pieces"]
         else:
             pieces = self.pieces["b_pieces"]
-
+        
         attacked_pos = []
         for key in pieces:
+            # Check if pieces[key] exists on the board
+            if self.board[pieces[key].pos] != pieces[key]:
+                continue
             cur_piece = pieces[key]
             cur_pos = cur_piece.pos
             for attack in cur_piece.attacking:
@@ -124,7 +127,7 @@ class Board():
                         if other_piece.player != enemy_player:
                             attacked_pos.append(attacked) #Attacked piece belongs to cur player
                         break
-    
+
         return attacked_pos
 
     def check_legal(self, action, player, pos):
@@ -489,8 +492,8 @@ class Board():
         else:
             king = self.pieces["b_pieces"]["b_K"]
        
-        actions = self.get_legal_actions_piece(king)
-        if len(actions[1]) == 0:
+        actions = self.get_legal_actions(cur_player)
+        if len(actions) == 0:
             return True
         else:
             return False
