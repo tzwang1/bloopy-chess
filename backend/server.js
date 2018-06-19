@@ -54,6 +54,7 @@ app.get('/playTwoRandomBots', function(req, res){
                     res.send(msg.content);
                 }
             }, {noAck: true});
+            console.log(req.query.new_game);
             game_data = {"game_type": game_type, "new_game": req.query.new_game}
             
             ch.sendToQueue('rpc_queue',
@@ -65,7 +66,7 @@ app.get('/playTwoRandomBots', function(req, res){
 })
 
 app.post('/oneBotOneHuman', function(req, res) {
-    console.log("Received request for /oneBotOneHuman");
+    // console.log("Received request for /oneBotOneHuman");
     amqp.connect(AMQP_HOST, function(err, conn) {
         conn.createChannel(function(err, ch) {
             ch.assertQueue('', {exclusive: true}, function(err, q) {
@@ -74,12 +75,12 @@ app.post('/oneBotOneHuman', function(req, res) {
 
             ch.consume(q.queue, function(msg) {
                 if (msg.properties.correlationId == corr) {
-                    console.log(JSON.parse(msg.content));
+                    // console.log(JSON.parse(msg.content));
                     res.send(msg.content);
                 }
             }, {noAck: true});
-            console.log("Request body: ", req.body);
-            console.log(req.body.move);
+            // console.log("Request body: ", req.body);
+            // console.log(req.body.move);
             // game_data = {"game_type": game_type, "move": req.body.move }
             ch.sendToQueue('rpc_queue',
             new Buffer.from(JSON.stringify(req.body)),

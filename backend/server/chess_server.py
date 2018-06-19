@@ -52,8 +52,7 @@ def play_two_bots(id, game_data):
     after a move.
     '''
     global games_dict
-
-    if game_data["new_game"] == "true":
+    if game_data["new_game"] == "true" or game_data["new_game"] == True:
         if id in games_dict:
             games_dict.pop(id, None)
 
@@ -91,7 +90,7 @@ def play_two_bots(id, game_data):
 
 def play_one_bot_one_human(id, game_data):
     global games_dict
-    if game_data["new_game"] == "true":
+    if game_data["new_game"] == "true" or game_data["new_game"] == True:
         if id in games_dict:
             games_dict.pop(id, None)
 
@@ -100,6 +99,7 @@ def play_one_bot_one_human(id, game_data):
         random_p = games_dict[id]["player"] 
     else:
         chess_game = game.Game(10, 8)
+        print(chess_game.board.board)
         random_p = players.RandomPlayer(chess_game)
         
         games_dict[id] = {}
@@ -169,7 +169,6 @@ def on_request(ch, method, props, body):
     a board state.
     '''
     game_data = json.loads(body)
-
     chess_board = play(props.correlation_id, game_data)
     # import pdb; pdb.set_trace()
     if len(chess_board) == 0:

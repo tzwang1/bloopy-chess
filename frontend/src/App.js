@@ -51,6 +51,7 @@ class App extends Component {
   }
 
   onPlayClick = (game_type) => {
+    console.log("Play button was clicked!");
     switch(game_type) {
       case "twoRandomBots":
         this.game_data.black_player = BOT;
@@ -121,10 +122,8 @@ class App extends Component {
     let game_type = this.game_data.game_type;
     let current_move = this.game_data.current_move;
     let new_game = this.game_data.new_game;
-
-    if(this.game_data.new_game) {
-      this.game_data.new_game = false;
-    }
+    console.log("New game 2: ", new_game);
+    console.log(current_move);
 
     // console.log("Updating component");
     if(this.state.game_playing) {
@@ -141,6 +140,9 @@ class App extends Component {
             if(data === "Game Over") {
               this.setState({ game_playing: false});
             } else {
+              if(this.game_data.new_game) {
+                this.game_data.new_game = false;
+              }
               this.setState({ board: data });
             }
           });
@@ -148,6 +150,7 @@ class App extends Component {
         case "oneBotOneHuman":
           if((current_player === WHITE && white_player === HUMAN) || (current_player === BLACK && black_player === HUMAN)) {
             if(current_move !== undefined) {
+              console.log("New game state: ",new_game);
               fetch("http://localhost:5000/oneBotOneHuman",  {
                 method: "POST",
                 credentials: "include",
@@ -164,6 +167,10 @@ class App extends Component {
                   this.setState({ game_playing: false});
                 } else {
                   console.log("Setting state of board");
+                  if(this.game_data.new_game) {
+                    console.log("Setting new game to false");
+                    this.game_data.new_game = false;
+                  }
                   this.setState({ board: data });
                 }
               });
