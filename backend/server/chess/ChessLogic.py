@@ -391,7 +391,7 @@ class Board():
                 rook.has_moved = True
 
                 self.board[new_king_pos[0], new_king_pos[1]] = cur_piece
-                self.board[rook_pos[0], rook_pos[1]] = rook
+                self.board[new_rook_pos[0], new_rook_pos[1]] = rook
 
                 return
         
