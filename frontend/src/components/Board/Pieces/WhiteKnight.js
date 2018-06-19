@@ -8,10 +8,11 @@ class WhiteKnight extends Component {
             gridPosition: {
                 x: 0,
                 y: 0
-            }
+            },
         }
-        this.tileSize = props.tileSize;
+        this.oldMatrixPos = this.props.pos;
         this.matrixPos = this.props.pos;
+        this.pieceMoved = false;
     }
     
     onStart = () => {
@@ -21,20 +22,21 @@ class WhiteKnight extends Component {
     }
 
     onStop = (event, drag) => {
-        let activeDrags = this.state.activeDrags
-        this.setState({activeDrags: --activeDrags});
+        // let activeDrags = this.state.activeDrags
+        // this.setState({activeDrags: --activeDrags});
+        // this.props.handleMove(this.oldMatrixPos, this.props.pos);
     }
 
     adjustPos = (pos) => {
         let new_pos;
-        if(Math.abs(pos % this.tileSize) > Math.floor(this.tileSize/2)) {
+        if(Math.abs(pos % this.props.tileSize) > Math.floor(this.props.tileSize/2)) {
             if(pos > 0) {
-                new_pos = pos + (this.tileSize - (pos % this.tileSize));
+                new_pos = pos + (this.props.tileSize - (pos % this.props.tileSize));
             } else {
-                new_pos = pos - (this.tileSize + (pos % this.tileSize));
+                new_pos = pos - (this.props.tileSize + (pos % this.props.tileSize));
             }
         } else {
-            new_pos = pos - (pos % this.tileSize);
+            new_pos = pos - (pos % this.props.tileSize);
         }
         return new_pos
     }
@@ -47,14 +49,19 @@ class WhiteKnight extends Component {
 
         x = this.adjustPos(x);
         y = this.adjustPos(y);
-
-        this.setState({gridPosition: {x, y}});
     
-        let newRow = ((y - oldGridY) / this.tileSize) + this.matrixPos[0];
-        let newCol = ((x - oldGridX) / this.tileSize) + this.matrixPos[1];
-        let oldMatrixPos = this.matrixPos;
-        this.matrixPos = [newRow, newCol];
-        this.props.handleMove(oldMatrixPos, this.matrixPos);
+        let newRow = ((y - oldGridY) / this.props.tileSize) + this.props.pos[0];
+        let newCol = ((x - oldGridX) / this.props.tileSize) + this.props.pos[1];
+        let oldMatrixPos = this.props.pos;
+        let newMatrixPos = [newRow, newCol];
+        console.log("Handling move in whiteKnight");
+        this.oldMatrixPos = oldMatrixPos;
+        this.matrixPos = newMatrixPos
+
+        this.pieceMoved = true;
+        
+        this.setState({gridPosition: {x, y}});
+        this.props.handleMove(oldMatrixPos, newMatrixPos);
     }
     
     onControlledDragStop = (e, position) => {
@@ -65,7 +72,8 @@ class WhiteKnight extends Component {
     render() {
         // console.log("Rendering black bishop");
         // console.log("Controlled Position", this.state.gridPosition);
-        // console.log("Position", this.matrixPos);
+        // console.log("White Knight Position", this.props.pos);
+        // console.log("Rendering in WhiteKnight");
         const gridPosition = this.state.gridPosition;
         const dragHandlers = {onStart: this.onStart, onStop: this.onControlledDragStop};
         return(
@@ -94,6 +102,24 @@ class WhiteKnight extends Component {
                 </svg>
             </Draggable>
         );
+    }
+
+    componentDidUpdate() {
+        if(this.props.gamePlaying) {
+            if(this.pieceMoved) {
+                console.log("Updating WhiteKnight Component!");
+                this.pieceMoved = false;
+                this.props.handleMove(this.oldMatrixPos, this.matrixPos);
+            }
+        }
+        // console.log("WhiteKnight has mounted");
+    }
+
+    componentWillUnmount() {
+        // if(this.props.gamePlaying) {
+        //     this.props.handleMove(this.oldMatrixPos, this.matrixPos);
+        // }
+    //    console.log("WhiteKnight has unmounted");
     }
 }
 

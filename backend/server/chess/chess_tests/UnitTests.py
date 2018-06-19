@@ -259,6 +259,53 @@ def test_promote_pawn():
     piece_list = test_board.promote_pawn()
     
     assert isinstance(piece_list[0], piece.Knight)
+
+def test_king_can_castle():
+    n = 4
+    all_pieces = {}
+    w_pieces = {}
+    b_pieces = {}
+
+    w_pieces["w_K"] = piece.King((0,0),1)
+    w_pieces["w_R_r"] = piece.Rook((0,3),1)
+    b_pieces["b_P_0"] = piece.Pawn((3,2),-1)
+
+    all_pieces["w_pieces"] = w_pieces
+    all_pieces["b_pieces"] = b_pieces
+
+    board = logic.initialize_board(all_pieces, n)
+    test_board = logic.Board(8)
+
+    test_board.pieces = all_pieces
+    test_board.board = board
+    test_board.n = n
+
+    action = (0, 2)
+
+    assert test_board.king_can_castle(1, action) == True
+
+    n = 5
+    all_pieces = {}
+    w_pieces = {}
+    b_pieces = {}
+
+    w_pieces["w_K"] = piece.King((0,4),1)
+    w_pieces["w_R_l"] = piece.Rook((0,0),1)
+    b_pieces["b_P_0"] = piece.Pawn((3,2),-1)
+
+    all_pieces["w_pieces"] = w_pieces
+    all_pieces["b_pieces"] = b_pieces
+
+    board = logic.initialize_board(all_pieces, n)
+    test_board = logic.Board(8)
+
+    test_board.pieces = all_pieces
+    test_board.board = board
+    test_board.n = n
+
+    action = (0, -2)
+    assert test_board.king_can_castle(1, action) == True
+
     
 
 # ============================================================================
@@ -356,6 +403,8 @@ if __name__=="__main__":
     test_stalemate()
     print("\tRunning unit test for promote_pawn")
     test_promote_pawn()
+    print("\tRunnin unit test for king_can_castle")
+    test_king_can_castle()
     print("Passed tests for ChessLogic.py")
     print("#" * 50)
 

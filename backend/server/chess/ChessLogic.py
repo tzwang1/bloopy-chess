@@ -223,10 +223,7 @@ class Board():
         if self.king_in_check(player) or self.king_in_checkmate(player):
             return False
         
-        if action != (0,-2) or action != (0,2):
-            return False
-
-        if king.has_moved or rook.has_moved:
+        if action != (0,-2) and action != (0,2):
             return False
 
         if player == 1:
@@ -257,6 +254,10 @@ class Board():
                     half_action = (0, 1)
                 else:
                     return False
+        
+        if king.has_moved or rook.has_moved:
+            return False
+
         
         moves = [half_action, action]
 

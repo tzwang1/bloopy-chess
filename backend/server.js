@@ -34,7 +34,7 @@ function generateUuid() {
 
 app.listen(5000, () => {
     console.log("app is running on port 5000");
-})
+});
 
 app.get('/', function(req, res) {
     console.log("Home page");
@@ -63,7 +63,7 @@ app.get('/playTwoRandomBots', function(req, res){
             });
         });
     });
-})
+});
 
 app.post('/oneBotOneHuman', function(req, res) {
     // console.log("Received request for /oneBotOneHuman");
@@ -88,7 +88,7 @@ app.post('/oneBotOneHuman', function(req, res) {
             });
         });
     });
-})
+});
 
 
 

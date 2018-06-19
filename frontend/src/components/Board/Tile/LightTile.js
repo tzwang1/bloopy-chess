@@ -54,7 +54,7 @@ const LightTile = (props) => {
             piece = <WhitePawn pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
             break;
         case 2:
-            piece = <WhiteKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;
+            piece = <WhiteKnight pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled} gamePlaying={props.gamePlaying}/>;
             break;
         case 3:
             piece = <WhiteBishop pos={props.pos} tileSize={TileSize} handleMove={props.handleMove} disabled={whiteDisabled}/>;

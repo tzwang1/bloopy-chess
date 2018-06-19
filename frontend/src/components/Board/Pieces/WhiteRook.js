@@ -66,7 +66,6 @@ class WhiteRook extends Component {
         // console.log("Rendering black bishop");
         // console.log("Controlled Position", this.state.gridPosition);
         // console.log("Position", this.matrixPos);
-        console.log("Black rook has current draggable value: ", this.props.disabled);
         const gridPosition = this.state.gridPosition;
         const dragHandlers = {onStart: this.onStart, onStop: this.onControlledDragStop};
         return(
