@@ -54,7 +54,7 @@ app.get('/playTwoRandomBots', function(req, res){
                     res.send(msg.content);
                 }
             }, {noAck: true});
-            game_data = {"game_type": game_type}
+            game_data = {"game_type": game_type, "new_game": req.query.new_game}
             
             ch.sendToQueue('rpc_queue',
             new Buffer.from(JSON.stringify(game_data)),

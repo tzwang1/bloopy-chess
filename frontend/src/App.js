@@ -25,13 +25,14 @@ class App extends Component {
       current_player: WHITE,
       game_playing: false,
       board: Utilities.defaultBoardState,
-      render: false // Set this value whenever you need to force a render()
+      // render: false // Set this value whenever you need to force a render()
     };
 
     this.game_data = {
       white_player: "",
       black_player: "",
       game_type: "",
+      new_game: false,
       current_move: undefined
     };
 
@@ -39,10 +40,14 @@ class App extends Component {
   }
 
   handleMove = (old_pos, new_pos) => {
-    console.log(old_pos);
-    console.log(new_pos);
     this.game_data.current_move = [old_pos, new_pos];
-    this.setState({render: true});
+    
+    let curBoard = this.state.board;
+    let curPiece = curBoard[old_pos[0]][old_pos[1]];
+    curBoard[old_pos[0]][old_pos[1]] = 0
+    curBoard[new_pos[0]][new_pos[1]] = curPiece;
+    console.log("Setting state of board!");
+    this.setState({ board: curBoard });
   }
 
   onPlayClick = (game_type) => {
@@ -61,9 +66,10 @@ class App extends Component {
         break;
     }
     this.setState({ current_screen: BOARD });
-    this.setState({ game_playing: true});
+    this.setState({ game_playing: true });
     this.setState({ board: Utilities.defaultBoardState })
     this.game_data.game_type =  game_type;
+    this.game_data.new_game = true;
 
   }
 
@@ -80,8 +86,7 @@ class App extends Component {
   }
 
   render() {
-    console.log("rendering!");
-    // console.log(this.state.board);
+    // console.log("rendering in App.js!");
     let current_screen;
     if(this.state.current_screen === BOARD){
       if(this.game_data.white_player === BOT && this.game_data.black_player === BOT) {
@@ -98,7 +103,6 @@ class App extends Component {
         current_screen = <Board classname={BOARD} board={this.state.board} handleMove={this.handleMove} gamePlaying={this.state.game_playing} curPlayer={this.state.current_player}/>
       
       } else {
-        console.log("The current player is: ", this.state.current_player);
         current_screen = <Board className={BOARD} board={this.state.board} gamePlaying={this.state.game_playing} curPlayer={this.state.current_player}/>;
       }
     }
@@ -112,12 +116,21 @@ class App extends Component {
 
   componentDidUpdate() {
     let current_player = this.state.current_player;
-    let {white_player, black_player, game_type, current_move} = this.game_data;
-    console.log("Updating component");
+    let white_player = this.game_data.white_player;
+    let black_player = this.game_data.black_player;
+    let game_type = this.game_data.game_type;
+    let current_move = this.game_data.current_move;
+    let new_game = this.game_data.new_game;
+
+    if(this.game_data.new_game) {
+      this.game_data.new_game = false;
+    }
+
+    // console.log("Updating component");
     if(this.state.game_playing) {
       switch (game_type) {
         case "twoRandomBots":
-          fetch("http://localhost:5000/playTwoRandomBots",{
+          fetch(`http://localhost:5000/playTwoRandomBots?new_game=${new_game}`,{
             method: "GET",
             credentials: "include"
           })
@@ -138,7 +151,7 @@ class App extends Component {
               fetch("http://localhost:5000/oneBotOneHuman",  {
                 method: "POST",
                 credentials: "include",
-                body: JSON.stringify({"game_type": game_type, "move": current_move}),
+                body: JSON.stringify({"game_type": game_type, "move": current_move, "new_game": new_game }),
                 headers:{
                   'Content-Type': 'application/json'
                 }
@@ -150,6 +163,7 @@ class App extends Component {
                 if(data === "Game Over") {
                   this.setState({ game_playing: false});
                 } else {
+                  console.log("Setting state of board");
                   this.setState({ board: data });
                 }
               });

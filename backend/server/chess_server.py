@@ -29,7 +29,7 @@ channel.queue_declare(queue='rpc_queue')
 # Initialize a dictionary of chess game
 games_dict = {}
 
-def play(game_data, id):
+def play(id, game_data):
     '''
     Determines what type of game to start.
     Returns the matrix representation of the board
@@ -38,14 +38,14 @@ def play(game_data, id):
 
     game_type = game_data["game_type"]
     if game_type == 'twoRandomBots':
-        return play_two_bots(id)
+        return play_two_bots(id, game_data)
     
     if game_type == "oneBotOneHuman":
-        return play_one_bot_one_human(id, game_data["move"])
+        return play_one_bot_one_human(id, game_data)
     
     return "invalid game type"
 
-def play_two_bots(id):
+def play_two_bots(id, game_data):
     '''
     Starts a game between two bots.
     Returns a matrix representation of the board
@@ -53,7 +53,10 @@ def play_two_bots(id):
     '''
     global games_dict
 
-    #import pdb; pdb.set_trace()
+    if game_data["new_game"] == "true":
+        if id in games_dict:
+            games_dict.pop(id, None)
+
     if id in games_dict:
         chess_game = games_dict[id]["chess_game"]
         random_p = games_dict[id]["player"] 
@@ -86,8 +89,12 @@ def play_two_bots(id):
     
     return chess_board
 
-def play_one_bot_one_human(id, move):
+def play_one_bot_one_human(id, game_data):
     global games_dict
+    if game_data["new_game"] == "true":
+        if id in games_dict:
+            games_dict.pop(id, None)
+
     if id in games_dict:
         chess_game = games_dict[id]["chess_game"]
         random_p = games_dict[id]["player"] 
@@ -101,7 +108,7 @@ def play_one_bot_one_human(id, move):
         games_dict[id]["is_over"] = chess_game.get_game_ended()
     
     print("starting game between human and bot")
-
+    move = game_data["move"]
     old_pos = move[0]
     new_pos = move[1]
 
@@ -122,11 +129,12 @@ def play_one_bot_one_human(id, move):
                 break
     
     if correct_move == None:
+        print("Invalid move")
         matrix_board = chess_game.convert_to_nums()
         
         if chess_game.cur_player == -1:
             matrix_board = np.flip(matrix_board, 0)
-        
+        print(matrix_board)
         return matrix_board
     
     # If the move was valid, then get the next state in the chess board
@@ -162,7 +170,7 @@ def on_request(ch, method, props, body):
     '''
     game_data = json.loads(body)
 
-    chess_board = play(game_data, props.correlation_id)
+    chess_board = play(props.correlation_id, game_data)
     # import pdb; pdb.set_trace()
     if len(chess_board) == 0:
         response = "Game Over"
