@@ -7,6 +7,7 @@ import Utilities from './Utilities';
 // Initialize some global constants
 
 // Constants for chess games
+const defaultBoardState = Utilities.defaultBoardState;
 const BOT = "bot";
 const HUMAN = "human";
 const WHITE = "white";
@@ -24,7 +25,7 @@ class App extends Component {
       current_screen: BOARD,
       current_player: WHITE,
       game_playing: false,
-      board: Utilities.defaultBoardState,
+      board: defaultBoardState,
       // render: false // Set this value whenever you need to force a render()
     };
 
@@ -46,12 +47,10 @@ class App extends Component {
     let curPiece = curBoard[old_pos[0]][old_pos[1]];
     curBoard[old_pos[0]][old_pos[1]] = 0
     curBoard[new_pos[0]][new_pos[1]] = curPiece;
-    console.log("Setting state of board!");
     this.setState({ board: curBoard });
   }
 
   onPlayClick = (game_type) => {
-    console.log("Play button was clicked!");
     switch(game_type) {
       case "twoRandomBots":
         this.game_data.black_player = BOT;
@@ -68,7 +67,15 @@ class App extends Component {
     }
     this.setState({ current_screen: BOARD });
     this.setState({ game_playing: true });
-    this.setState({ board: Utilities.defaultBoardState })
+    // For some reason setting board to defaultBoardState does NOT work!! 
+    this.setState({ board: [[-4, -2, -3, -5, -6, -3, -2, -4],
+                            [-1, -1, -1, -1, -1, -1, -1, -1],
+                            [ 0, 0, 0, 0, 0, 0, 0, 0],
+                            [ 0, 0, 0, 0, 0, 0, 0, 0],
+                            [ 0, 0, 0, 0, 0, 0, 0, 0], 
+                            [ 0, 0, 0, 0, 0, 0, 0, 0], 
+                            [ 1, 1, 1, 1, 1, 1, 1, 1], 
+                            [ 4, 2, 3, 5, 6, 3, 2, 4]] })
     this.game_data.game_type =  game_type;
     this.game_data.new_game = true;
 
@@ -87,7 +94,7 @@ class App extends Component {
   }
 
   render() {
-    // console.log("rendering in App.js!");
+    console.log("Board state: ", this.state.board);
     let current_screen;
     if(this.state.current_screen === BOARD){
       if(this.game_data.white_player === BOT && this.game_data.black_player === BOT) {
@@ -122,10 +129,7 @@ class App extends Component {
     let game_type = this.game_data.game_type;
     let current_move = this.game_data.current_move;
     let new_game = this.game_data.new_game;
-    console.log("New game 2: ", new_game);
-    console.log(current_move);
 
-    // console.log("Updating component");
     if(this.state.game_playing) {
       switch (game_type) {
         case "twoRandomBots":
@@ -166,9 +170,7 @@ class App extends Component {
                 if(data === "Game Over") {
                   this.setState({ game_playing: false});
                 } else {
-                  console.log("Setting state of board");
                   if(this.game_data.new_game) {
-                    console.log("Setting new game to false");
                     this.game_data.new_game = false;
                   }
                   this.setState({ board: data });
