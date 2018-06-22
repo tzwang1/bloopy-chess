@@ -555,4 +555,36 @@ class Board():
                 return [knight, bishop, rook, queen]
         
         return []
+    
+    def get_all_actions(self):
+        '''
+        Returns a list of all possible actions (not all actions are valid) - will not return actions
+        from all pieces if some pieces have been captured. 
+        '''
 
+        all_actions = []
+
+        w_pieces = self.pieces["w_pieces"]
+        b_pieces = self.pieces["b_pieces"]
+
+        for key in w_pieces:
+            cur_action = [w_pieces[key]]
+            cur_moves = []
+            for action in w_pieces[key].actions:
+                for speed in w_pieces[key].speed:
+                    cur_moves.append((action[0]*speed, action[1]*speed))
+            
+            cur_action.append(cur_moves)
+            all_actions.append(cur_action)
+
+        for key in b_pieces:
+            cur_action = [b_pieces[key]]
+            cur_moves = []
+            for action in b_pieces[key].actions:
+                for speed in b_pieces[key].speed:
+                    cur_moves.append((action[0]*speed, action[1]*speed))
+            
+            cur_action.append(cur_moves)
+            all_actions.append(cur_action)
+
+        return all_actions
