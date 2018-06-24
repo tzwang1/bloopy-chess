@@ -60,7 +60,21 @@ class NNet():
 
                 batch_idx+=1
 
-                # Plot graph of training data/progress
+                # TODO: Plot graph of training data/progress
+
+def predict(self, board):
+    board = torch.FloatTensor(board.astype(np.float64))
+    if args.cuda: 
+        board = board.contiguous().cuda()
+    
+    board = Variable(board, volatile=True)
+    board = board.view(1, self.board_x, self.board_y)
+
+    self.nnet.eval() # Switch neural net to evaluation mode
+    pi, v = self.nnet(board)
+
+    return torch.exp(pi).data.cpu().numpy()[0], v.data.cpu().numpy()[0]
+
 
 def loss_pi(self, targets, outputs)
     return -torch.sum(targets * outputs)/targets.size()[0]
