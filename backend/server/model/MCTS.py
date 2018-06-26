@@ -17,7 +17,7 @@ class MCTS(object):
         self.all_actions = sorted(game.board.get_all_actions())
         self.action_size = len(self.all_actions)
     
-    def getActionProb(self, canonicalBoard, temp=1):
+    def get_action_prob(self, canonicalBoard, temp=1):
         """
         This function performs numMCTSSims simulations of MCTS starting from the current state in
         game.

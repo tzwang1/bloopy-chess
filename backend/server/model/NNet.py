@@ -72,7 +72,7 @@ def predict(self, board):
 
     self.nnet.eval() # Switch neural net to evaluation mode
     pi, v = self.nnet(board)
-
+    
     return torch.exp(pi).data.cpu().numpy()[0], v.data.cpu().numpy()[0]
 
 
