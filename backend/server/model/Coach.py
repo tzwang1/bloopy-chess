@@ -1,6 +1,6 @@
 import sys
 sys.path.append('..')
-import ChessGame as Game
+import chess.ChessGame as Game
 from model.MCTS import MCTS
 import numpy as np
 from pickle import Pickler, Unpickler

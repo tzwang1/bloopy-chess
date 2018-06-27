@@ -17,7 +17,7 @@ class MCTS(object):
         self.all_actions = sorted(game.board.get_all_actions())
         self.action_size = len(self.all_actions)
     
-    def get_action_prob(self, canonicalBoard, temp=1):
+    def get_action_prob(self, game, temp=1):
         """
         This function performs numMCTSSims simulations of MCTS starting from the current state in
         game.
@@ -28,7 +28,8 @@ class MCTS(object):
         for i in range(self.args.numMCTSSims):
             self.search(game)
         
-        s = self.game.stringRepresentation(canonicalBoard)
+        # s = self.game.stringRepresentation(canonicalBoard)
+        s = str(game.convert_to_nums())
         counts = [self.Nsa[(s,a)] if (s,a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
 
         if temp==0:
