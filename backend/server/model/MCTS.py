@@ -30,7 +30,7 @@ class MCTS(object):
         
         # s = self.game.stringRepresentation(canonicalBoard)
         s = str(game.convert_to_nums())
-        counts = [self.Nsa[(s,a)] if (s,a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
+        counts = [self.Nsa[(s,a)] if (s,a) in self.Nsa else 0 for a in range(self.action_size)]
 
         if temp==0:
             bestA = np.argmax(counts)
@@ -67,7 +67,7 @@ class MCTS(object):
         s = str(game.convert_to_nums()) # converts the numerical representation of a board state to a string
 
         if s not in self.Es:
-            self.Es[s] = game.get_game_ended()
+            self.Es[s] = self.game.get_game_ended()
         if self.Es[s]!=0:
             # terminal node
             return -self.Es[s]

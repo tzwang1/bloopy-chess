@@ -18,7 +18,7 @@ args = dotdict({
     'num_channels': 512,
 })
 
-class NNet():
+class NNetWrapper():
     def __init__(self, game):
         self.nnet = chessnnet(game, args)
         self.board_x, self.board_y = game.board.n, game.board.n
@@ -72,7 +72,7 @@ def predict(self, board):
 
     self.nnet.eval() # Switch neural net to evaluation mode
     pi, v = self.nnet(board)
-    
+
     return torch.exp(pi).data.cpu().numpy()[0], v.data.cpu().numpy()[0]
 
 

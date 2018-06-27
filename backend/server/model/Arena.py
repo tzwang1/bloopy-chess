@@ -34,9 +34,8 @@ class Arena():
         """
         players = [self.player2, None, self.player1]
         
-        game = Game(10,8)
         it = 0
-        while not game.get_game_ended():
+        while not self.game.get_game_ended():
             it+=1
             if verbose:
                 assert(self.display)
@@ -46,13 +45,14 @@ class Arena():
 
             legal_actions = self.game.board.get_legal_actions(game.cur_player)
 
-            if legal_actions[action]==0:
-                print(action)
-                assert legal_actions[action] > 0
+            # if legal_actions[action_index] == 0:
+            #     print(action)
+            #     assert legal_actions[action] > 0
             
-            game.get_next_state(game.cur_player, legal_actions[action])
+            self.game.get_next_state(game.cur_player, legal_actions[action_index])
+
         if verbose:
             assert(self.display)
             print("Game over: Turn ", str(it), "Result ", str(game.get_game_ended()))
             # self.display(board)
-        return self.game.get_game_ended
+        return self.game.get_game_ended()

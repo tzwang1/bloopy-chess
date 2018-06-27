@@ -37,10 +37,12 @@ class Coach(object):
 
         while True:
             episode_step+=1
-            board = self.game.convert_to_nums()
+            board = game.convert_to_nums()
             temp = int(episode_step < self.args.temp_threshold)
 
-            pi = self.mcts.get_action_prob(board, temp=temp)
+            self.mcts = MCTS(game, self.nnet, self.args) 
+
+            pi = self.mcts.get_action_prob(game, temp=temp)
             trainExamples.append([board, game.cur_player, pi, None])
             
             action_index = np.random.choice(len(pi), p=pi) # Finding the action index with highest probability
@@ -73,7 +75,8 @@ class Coach(object):
                 iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
 
                 for eps in range(self.args.numEps):
-                    self.mcts = MCTS(self.game, self.nnet, self.args)   # reset search tree
+                    # game = Game(10, 8)
+                    # self.mcts = MCTS(game, self.nnet, self.args)   # reset search tree
                     iterationTrainExamples += self.executeEpisode()
             
                  # save the iteration examples to the history 
@@ -102,8 +105,9 @@ class Coach(object):
             nmcts = MCTS(self.game, self.nnet, self.args)
 
             print('PITTING AGAINST PREVIOUS VERSION')
+            game = Game(10, 8)
             arena = Arena(lambda x: np.argmax(pmcts.getActionProb(x, temp=0)),
-                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game)
+                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), game)
             pwins, nwins, draws = arena.playGames(self.args.arenaCompare)
 
             print('NEW/PREV WINS : %d / %d ; DRAWS : %d' % (nwins, pwins, draws))
