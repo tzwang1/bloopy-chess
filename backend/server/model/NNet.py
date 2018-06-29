@@ -75,7 +75,6 @@ def predict(self, board):
 
     return torch.exp(pi).data.cpu().numpy()[0], v.data.cpu().numpy()[0]
 
-
 def loss_pi(self, targets, outputs)
     return -torch.sum(targets * outputs)/targets.size()[0]
 

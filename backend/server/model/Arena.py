@@ -35,24 +35,73 @@ class Arena():
         players = [self.player2, None, self.player1]
         
         it = 0
-        while not self.game.get_game_ended():
+
+        game = Game(10, 8)
+        while not game.get_game_ended():
             it+=1
             if verbose:
                 assert(self.display)
                 print("Turn ", str(it), "Player ", str(game.cur_player))
                 #self.display(board)
-            action_index = players[curPlayer+1](self.game.convert_to_nums())
+            action_index = players[curPlayer+1](game.convert_to_nums())
 
-            legal_actions = self.game.board.get_legal_actions(game.cur_player)
+            legal_actions = game.board.get_legal_actions(game.cur_player)
 
             # if legal_actions[action_index] == 0:
             #     print(action)
             #     assert legal_actions[action] > 0
             
-            self.game.get_next_state(game.cur_player, legal_actions[action_index])
+            game.get_next_state(game.cur_player, legal_actions[action_index])
 
         if verbose:
             assert(self.display)
             print("Game over: Turn ", str(it), "Result ", str(game.get_game_ended()))
             # self.display(board)
-        return self.game.get_game_ended()
+        return game.get_game_ended() #TODO change to return 1/-1/0 instead of True/False
+    
+    def playGames(self, num, verbose=False):
+        """
+        Plays num games in which player1 starts num/2 games and player2 starts
+        num/2 games.
+        Returns:
+            oneWon: games won by player1
+            twoWon: games won by player2
+            draws:  games won by nobody
+        """
+        # eps_time = AverageMeter()
+        # bar = Bar('Arena.playGames', max=num)
+        # end = time.time()
+        eps = 0
+        maxeps = int(num)
+
+        num = int(num/2)
+        oneWon = 0
+        twoWon = 0
+        draws = 0
+        for _ in range(num):
+            gameResult = self.playGame(verbose=verbose)
+            if gameResult==1:
+                oneWon+=1
+            elif gameResult==-1:
+                twoWon+=1
+            else:
+                draws+=1
+
+            # bookkeeping +  TODO: plot progress
+            eps += 1
+
+        self.player1, self.player2 = self.player2, self.player1
+        
+        for _ in range(num):
+            gameResult = self.playGame(verbose=verbose)
+            if gameResult==-1:
+                oneWon+=1                
+            elif gameResult==1:
+                twoWon+=1
+            else:
+                draws+=1
+            # bookkeeping + TODO: plot progress
+            eps += 1
+        
+        return oneWon, twoWon, draws
+    

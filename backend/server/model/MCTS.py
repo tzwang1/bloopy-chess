@@ -11,8 +11,8 @@ class MCTS(object):
         self.Ns = {}        # stores #times board s was visited
         self.Ps = {}        # stores initial policy (returned by neural net)
 
-        self.Es = {}        # stores game.getGameEnded ended for board s
-        self.Vs = {}        # stores game.getValidMoves for board s
+        self.Es = {}        # stores game.get_game_ended ended for board s
+        self.Vs = {}        # stores game.board.get_legal_actions for board s
 
         self.all_actions = sorted(game.board.get_all_actions())
         self.action_size = len(self.all_actions)
