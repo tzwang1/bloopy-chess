@@ -2,7 +2,7 @@ matrix:
   include:
     - language: python
       python:
-        - "3.7"
+        - "3.6"
       
       # Change into python directory
       before_script:
