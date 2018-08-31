@@ -5,6 +5,7 @@ backend/node_modules
 backend/server/chess/__pycache__
 backend/server/model/__pycache__
 frontend/node_modules
+backend/server/chess/*.pyc
 
 
 # testing
