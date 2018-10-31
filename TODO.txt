@@ -1,0 +1,7 @@
+1. Create a skeleton test case that I can use to check the validity of chess states
+. So I can see whether the chess logic is incorrect or whether there is something wrong
+with the request/response API
+
+2. Fix weird component unmount react bug
+
+3. Train ML model
