@@ -14,7 +14,8 @@ class MCTS(object):
         self.Es = {}        # stores game.get_game_ended ended for board s
         self.Vs = {}        # stores game.board.get_legal_actions for board s
 
-        self.all_actions = sorted(game.board.get_all_actions())
+        #self.all_actions = sorted(game.board.get_all_actions())
+        self.all_actions = game.board.get_all_actions()
         self.action_size = len(self.all_actions)
     
     def get_action_prob(self, game, temp=1):
@@ -25,7 +26,7 @@ class MCTS(object):
             probs: a policy vector where the probability of the ith action is
                    proportional to Nsa[(s,a)]**(1./temp)
         """
-        for i in range(self.args.numMCTSSims):
+        for i in range(self.args.num_MCTS_sims):
             self.search(game)
         
         # s = self.game.stringRepresentation(canonicalBoard)

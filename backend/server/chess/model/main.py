@@ -8,19 +8,19 @@ import ChessGame
 from NNet import NNetWrapper as nn
 
 parser = argparse.ArgumentParser(description='RL Chess')
-parser.add_argument('--numIters', type=int, default=1000,
+parser.add_argument('--num_iters', type=int, default=1000,
                     help='number of iterations to train the data')
-parser.add_argument('--numEps', type=int, default=100,
+parser.add_argument('--num_eps', type=int, default=100,
                     help='number of episodes to train the data')
-parser.add_argument('--tempThreshold', type=int, default=15,
+parser.add_argument('--temp_threshold', type=int, default=15,
                     help='')
-parser.add_argument('--updateThreshold', type=float, default=0.6,
+parser.add_argument('--update_threshold', type=float, default=0.6,
                     help='')
-parser.add_argument('--maxlenOfQueue', type=int, default='200000',
+parser.add_argument('--max_len_queue', type=int, default='200000',
                     help='maximum number of samples to train on')
-parser.add_argument('--numMCTSSims', type=int, default=25,
+parser.add_argument('--num_MCTS_sims', type=int, default=25,
                     help='number of MCTS simulations to run')
-parser.add_argument('--arenaCompare', type=int, default=40,
+parser.add_argument('--arena_compare', type=int, default=40,
                     help='')
 parser.add_argument('--cpuct', type=int, default=1,
                     help='number of CPUs to train on')
@@ -30,7 +30,7 @@ parser.add_argument('--load_model', type=bool,  default=False,
                     help='load the model or not')
 parser.add_argument('--load_folder_file', type=str, default='',
                     help='')
-parser.add_argument('--numItersForTrainExamplesHistory', type=int, default=20,
+parser.add_argument('--num_iters_train_example_history', type=int, default=20,
                     help='number of previous examples to save')
 
 args = parser.parse_args()
@@ -58,7 +58,7 @@ if __name__=="__main__":
     if args.load_model:
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
 
-    c = Coach(game, nnet, args)
+    c = Coach(nnet, game, args)
     if args.load_model:
         print("Load trainExamples from file")
         c.loadTrainExamples()

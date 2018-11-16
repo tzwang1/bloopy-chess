@@ -2,17 +2,18 @@ import os, sys, inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
-import ChessGame as Game
+from ChessGame import Game
 from MCTS import MCTS
 import numpy as np
 from pickle import Pickler, Unpickler
+from collections import deque
 
 
 class Coach(object):
     def __init__(self, nnet, game, args):
         self.game = game
         self.nnet = nnet
-        self.pnet = nnet.__class__(self.game) # competitor network
+        self.pnet = self.nnet.__class__(self.game) # competitor network
         self.args = args
         self.mcts = MCTS(self.game, self.nnet, self.args)
         self.train_example_history = [] # list containing args.num_iters_for_training_example_history latest training examples
@@ -64,61 +65,61 @@ class Coach(object):
         """
         Performs numIters iterations with numEps episodes of self-play in each
         iteration. After every iteration, it retrains neural network with
-        examples in trainExamples (which has a maximium length of maxlenofQueue).
+        examples in train_examples (which has a maximium length of maxlenofQueue).
         It then pits the new neural network against the old one and accepts it
         only if it wins >= updateThreshold fraction of games.
         """
 
-        for i in range(1, self.args.numIters+1):
+        for i in range(1, self.args.num_iters+1):
             # bookkeeping
             print('------ITER ' + str(i) + '------')
             # examples of the iteration
-            if not self.skipFirstSelfPlay or i>1:
-                iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
+            if not self.skip_first_play or i>1:
+                iterationTrainExamples = deque([], maxlen=self.args.max_len_queue)
 
-                for eps in range(self.args.numEps):
+                for eps in range(self.args.num_eps):
                     # game = Game(10, 8)
                     # self.mcts = MCTS(game, self.nnet, self.args)   # reset search tree
-                    iterationTrainExamples += self.executeEpisode()
+                    iterationTrainExamples += self.execute_episode()
             
                  # save the iteration examples to the history 
-                self.trainExamplesHistory.append(iterationTrainExamples)
+                self.train_example_history.append(iterationTrainExamples)
 
-            if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
-                print("len(trainExamplesHistory) =", len(self.trainExamplesHistory), " => remove the oldest trainExamples")
-                self.trainExamplesHistory.pop(0)
+            if len(self.train_example_history) > self.args.num_iters_train_example_history:
+                print("len(trainExamplesHistory) =", len(self.train_example_history), " => remove the oldest train_examples")
+                self.train_example_history.pop(0)
 
             # backup history to a file
             # NB! the examples were collected using the model from the previous iteration, so (i-1)  
             self.saveTrainExamples(i-1)
 
             # shuffle examples before training
-            trainExamples = []
-            for e in self.trainExamplesHistory:
-                trainExamples.extend(e)
-            shuffle(trainExamples)
+            train_examples = []
+            for e in self.train_example_history:
+                train_examples.extend(e)
+            shuffle(train_examples)
 
             # training new network, keeping a copy of the old one
             self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
             self.pnet.load_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
             pmcts = MCTS(self.game, self.pnet, self.args)
             
-            self.nnet.train(trainExamples)
+            self.nnet.train(train_examples)
             nmcts = MCTS(self.game, self.nnet, self.args)
 
             print('PITTING AGAINST PREVIOUS VERSION')
             game = Game(10, 8)
-            arena = Arena(lambda x: np.argmax(pmcts.getActionProb(x, temp=0)),
-                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), game)
-            pwins, nwins, draws = arena.playGames(self.args.arenaCompare)
+            arena = Arena(lambda x: np.argmax(pmcts.get_action_prob(x, temp=0)),
+                          lambda x: np.argmax(nmcts.get_action_prob(x, temp=0)), game)
+            pwins, nwins, draws = arena.playGames(self.args.arena_compare)
 
             print('NEW/PREV WINS : %d / %d ; DRAWS : %d' % (nwins, pwins, draws))
-            if pwins+nwins > 0 and float(nwins)/(pwins+nwins) < self.args.updateThreshold:
+            if pwins+nwins > 0 and float(nwins)/(pwins+nwins) < self.args.update_threshold:
                 print('REJECTING NEW MODEL')
                 self.nnet.load_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
             else:
                 print('ACCEPTING NEW MODEL')
-                self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
+                self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.get_checkpoint_file(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar')           
 
 
@@ -129,9 +130,9 @@ class Coach(object):
         folder = self.args.checkpoint
         if not os.path.exists(folder):
             os.makedirs(folder)
-        filename = os.path.join(folder, self.getCheckpointFile(iteration)+".examples")
+        filename = os.path.join(folder, self.get_checkpoint_file(iteration)+".examples")
         with open(filename, "wb+") as f:
-            Pickler(f).dump(self.trainExamplesHistory)
+            Pickler(f).dump(self.train_example_history)
         f.closed
 
     def load_train_examples(self):
@@ -139,13 +140,13 @@ class Coach(object):
         examplesFile = modelFile+".examples"
         if not os.path.isfile(examplesFile):
             print(examplesFile)
-            r = input("File with trainExamples not found. Continue? [y|n]")
+            r = input("File with train_examples not found. Continue? [y|n]")
             if r != "y":
                 sys.exit()
         else:
-            print("File with trainExamples found. Read it.")
+            print("File with train_examples found. Read it.")
             with open(examplesFile, "rb") as f:
-                self.trainExamplesHistory = Unpickler(f).load()
+                self.train_example_history = Unpickler(f).load()
             f.closed
             # examples based on the model were already collected (loaded)
             self.skipFirstSelfPlay = True

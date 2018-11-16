@@ -85,42 +85,42 @@ class NNetWrapper(object):
 
                 # TODO: Plot graph of training data/progress
 
-def predict(self, board):
-    board = torch.FloatTensor(board.astype(np.float64))
-    if args.cuda: 
-        board = board.contiguous().cuda()
-    
-    board = Variable(board, volatile=True)
-    board = board.view(1, self.board_x, self.board_y)
+    def predict(self, board):
+        board = torch.FloatTensor(board.astype(np.float64))
+        if args.cuda: 
+            board = board.contiguous().cuda()
+        
+        board = Variable(board, volatile=True)
+        board = board.view(1, self.board_x, self.board_y)
 
-    self.nnet.eval() # Switch neural net to evaluation mode
-    pi, v = self.nnet(board)
+        self.nnet.eval() # Switch neural net to evaluation mode
+        pi, v = self.nnet(board)
 
-    return torch.exp(pi).data.cpu().numpy()[0], v.data.cpu().numpy()[0]
+        return torch.exp(pi).data.cpu().numpy()[0], v.data.cpu().numpy()[0]
 
-def loss_pi(self, targets, outputs):
-    return -torch.sum(targets * outputs)/targets.size()[0]
+    def loss_pi(self, targets, outputs):
+        return -torch.sum(targets * outputs)/targets.size()[0]
 
-def loss_v(self, targets, outputs):
-    return torch.sum((targets - outputs.view(-1))**2)/targets.size()[0]
+    def loss_v(self, targets, outputs):
+        return torch.sum((targets - outputs.view(-1))**2)/targets.size()[0]
 
-def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
+    def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
+            filepath = os.path.join(folder, filename)
+            if not os.path.exists(folder):
+                print("Checkpoint Directory does not exist! Making directory {}".format(folder))
+                os.mkdir(folder)
+            else:
+                print("Checkpoint Directory exists! ")
+            torch.save({
+                'state_dict' : self.nnet.state_dict(),
+            }, filepath)
+
+    def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
+        # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
         filepath = os.path.join(folder, filename)
-        if not os.path.exists(folder):
-            print("Checkpoint Directory does not exist! Making directory {}".format(folder))
-            os.mkdir(folder)
-        else:
-            print("Checkpoint Directory exists! ")
-        torch.save({
-            'state_dict' : self.nnet.state_dict(),
-        }, filepath)
-
-def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
-    # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
-    filepath = os.path.join(folder, filename)
-    if not os.path.exists(filepath):
-        raise("No model in path {}".format(filepath))
-    checkpoint = torch.load(filepath)
-    self.nnet.load_state_dict(checkpoint['state_dict'])
+        if not os.path.exists(filepath):
+            raise("No model in path {}".format(filepath))
+        checkpoint = torch.load(filepath)
+        self.nnet.load_state_dict(checkpoint['state_dict'])
 
 
