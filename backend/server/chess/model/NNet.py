@@ -1,5 +1,6 @@
 import argparse
 import numpy as np
+import os
 
 import torch
 import torch.nn as nn
@@ -39,7 +40,7 @@ args = parser.parse_args()
 #     'num_channels': 512,
 # })
 
-class NNetWrapper():
+class NNetWrapper(object):
     def __init__(self, game):
         self.nnet = chessnnet(game, args)
         self.board_x, self.board_y = game.board.n, game.board.n
@@ -102,5 +103,24 @@ def loss_pi(self, targets, outputs):
 
 def loss_v(self, targets, outputs):
     return torch.sum((targets - outputs.view(-1))**2)/targets.size()[0]
+
+def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
+        filepath = os.path.join(folder, filename)
+        if not os.path.exists(folder):
+            print("Checkpoint Directory does not exist! Making directory {}".format(folder))
+            os.mkdir(folder)
+        else:
+            print("Checkpoint Directory exists! ")
+        torch.save({
+            'state_dict' : self.nnet.state_dict(),
+        }, filepath)
+
+def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
+    # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
+    filepath = os.path.join(folder, filename)
+    if not os.path.exists(filepath):
+        raise("No model in path {}".format(filepath))
+    checkpoint = torch.load(filepath)
+    self.nnet.load_state_dict(checkpoint['state_dict'])
 
 

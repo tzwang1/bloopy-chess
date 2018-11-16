@@ -12,7 +12,7 @@ class Coach(object):
     def __init__(self, nnet, game, args):
         self.game = game
         self.nnet = nnet
-        self.pnet = self.nnet.__class__(self.game) # competitor network
+        self.pnet = nnet.__class__(self.game) # competitor network
         self.args = args
         self.mcts = MCTS(self.game, self.nnet, self.args)
         self.train_example_history = [] # list containing args.num_iters_for_training_example_history latest training examples
