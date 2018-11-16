@@ -3,7 +3,7 @@
 # dependencies
 backend/node_modules
 backend/server/chess/__pycache__
-backend/server/model/__pycache__
+backend/server/chess/model/__pycache__
 frontend/node_modules
 backend/server/chess/*.pyc
 
