@@ -1,0 +1,1 @@
+Credit goes to https://github.com/suragnair/alpha-zero-general for majority of the code in this folder.

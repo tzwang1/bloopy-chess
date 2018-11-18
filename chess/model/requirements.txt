@@ -1,0 +1,7 @@
+jsonschema==2.6.0
+numpy==1.14.0
+pandas==0.22.0
+pika==0.11.2
+pytest==3.3.2
+torch==0.4.0
+torchvision==0.2.1
