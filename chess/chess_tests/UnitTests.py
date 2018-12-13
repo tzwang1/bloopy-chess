@@ -86,8 +86,8 @@ def test_check_legal():
     test_board.board = board
     test_board.n = n
     legal_actions = test_board.get_legal_actions(1)
-    
-    assert legal_actions[0][1] == [[1, 0], [2, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [0, 2], [1, 1], [2, 2]]
+
+    assert legal_actions[w_pieces["w_Q"]] == [[1, 0], [2, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [0, 2], [1, 1], [2, 2]]
 
 def test_check_legal_Pawn():
     n = 8
@@ -106,31 +106,30 @@ def test_check_legal_Pawn():
     test_board.n = n
     legal_actions = test_board.get_legal_actions(1)
 
-    assert legal_actions[0][1] == [(-1, 0), (-2, 0)]
-    w_pawn = legal_actions[0][0]
-    action = legal_actions[0][1][1]
+    assert legal_actions[w_pieces["w_P_0"]] == [(-1, 0), (-2, 0)]
+    w_pawn = w_pieces["w_P_0"]
+    action = [-2, 0]
     move = (w_pawn, action)
     test_board.execute_action(move)
     
     legal_actions = test_board.get_legal_actions(1)
-    w_pawn = legal_actions[0][0]
-    action = legal_actions[0][1][0]
+    action = legal_actions[w_pawn][0]
     move = (w_pawn, action)
     test_board.execute_action(move)
     
     test_board.switch_orientation()
     legal_actions = test_board.get_legal_actions(-1)
-    assert legal_actions[0][1] == [(-1,0), (-2,0)]
+    assert legal_actions[b_pieces["b_P_1"]] == [(-1,0), (-2,0)]
 
-    b_pawn = legal_actions[0][0]
-    action = legal_actions[0][1][1]
+    b_pawn = b_pieces["b_P_1"]
+    action = legal_actions[b_pawn][1]
     move = (b_pawn, action)
     test_board.execute_action(move)
 
     test_board.switch_orientation()
     legal_actions = test_board.get_legal_actions(1)
 
-    assert legal_actions[0][1] == [(-1,1), (-1,0)]
+    assert legal_actions[w_pawn] == [(-1,1), (-1,0)]
     test_board.switch_orientation()
     
     b_pawn = b_pieces["b_P_1"]
@@ -140,7 +139,7 @@ def test_check_legal_Pawn():
     test_board.switch_orientation()
     legal_actions = test_board.get_legal_actions(1)
     
-    assert legal_actions[0][1] == [(-1,1), (-1,0)]
+    assert legal_actions[w_pawn] == [(-1,1), (-1,0)]
 
 def test_check_legal_King():
     n = 4
@@ -363,7 +362,9 @@ def test_chess_game():
 def test_get_next_state():
     test_game = game.Game(10, 8)
     legal_actions = test_game.board.get_legal_actions(test_game.cur_player)
-    move = (legal_actions[0][0], legal_actions[0][1][1])
+    w_Knight = test_game.board.pieces["w_pieces"]["w_N_l"]
+    
+    move = (w_Knight, legal_actions[w_Knight][1])
     test_game.get_next_state(1, move)
     assert isinstance(test_game.board.board[2,0], piece.Knight) == True
     assert test_game.board.pieces["w_pieces"]["w_N_l"].pos == (2,0)
@@ -383,7 +384,8 @@ def test_convert_to_nums():
               [ 4, 2, 3, 5, 6, 3, 2, 4]])) == True
                         
     legal_actions = test_game.board.get_legal_actions(test_game.cur_player)
-    move = (legal_actions[0][0], legal_actions[0][1][1])
+    w_Knight = test_game.board.pieces["w_pieces"]["w_N_l"]
+    move = (w_Knight, legal_actions[w_Knight][1])
     test_game.get_next_state(test_game.cur_player, move)
     matrix_board = test_game.convert_to_nums()
     assert np.array_equal(matrix_board, 
