@@ -3,7 +3,7 @@ Define behaviour of all chess pieces
 1. actions - The actions they can perform
 2. speed - The speed they can move
 3. pos - Their current position on the board
-4. player - The player they are associated with
+4. player - The player they are associated with (1 = white, -1 = black)
 '''
 class Piece():
     def __init__(self, name, pos, player):

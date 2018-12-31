@@ -303,8 +303,6 @@ class Board():
         (1 for white piece, -1 for black piece)
         '''
        
-        legal_actions = []
-        legal_actions.append(cur_piece)
         all_actions = []        
         # Different action behaviour for pawns, so must be handled separately
         if isinstance(cur_piece, piece.Pawn):
@@ -326,22 +324,26 @@ class Board():
                             break
                     else:
                         break
-        legal_actions.append(all_actions)
-        return legal_actions
+
+        return all_actions
 
     def get_legal_actions(self, player):
         '''
         Returns a list of all legal actions
         '''
-        legal_actions = []
+        legal_actions = {}
         if player == 1:
             pieces = self.pieces["w_pieces"]
         else:
             pieces = self.pieces["b_pieces"]
         for key in pieces:
             actions = self.get_legal_actions_piece(pieces[key])
-            if len(actions[1]) > 0:
-                legal_actions.append(actions)
+            if len(actions) > 0:
+                if pieces[key] not in legal_actions:
+                    legal_actions[pieces[key]] = []
+                
+                legal_actions[pieces[key]].extend(actions)
+
         return legal_actions
     
     def execute_action(self, action):
@@ -556,35 +558,39 @@ class Board():
         
         return []
     
+    def get_player_actions(self, player):
+        '''
+        Returns a list of all possible actions (not all actions are valid) for a specific player - will not
+        return actions from pieces that have been captured.
+        '''
+        player_actions = {}
+        if player == 1:
+            pieces = self.pieces["w_pieces"]
+        else:
+            pieces = self.pieces["b_pieces"]
+        
+        
+        for key in pieces:
+            cur_piece = pieces[key]
+            if cur_piece not in player_actions:
+                player_actions[cur_piece] = []
+
+            for action in pieces[key].actions:
+                for speed in pieces[key].speed:
+                    player_actions[cur_piece].append((action[0] * speed, action[1] * speed))
+        
+        return player_actions
+
+    
     def get_all_actions(self):
         '''
         Returns a list of all possible actions (not all actions are valid) - will not return actions
         from all pieces if some pieces have been captured. 
         '''
 
-        all_actions = []
+        white_player_actions = self.get_player_actions(1)
+        black_player_actions = self.get_player_actions(-1)
 
-        w_pieces = self.pieces["w_pieces"]
-        b_pieces = self.pieces["b_pieces"]
-
-        for key in w_pieces:
-            cur_action = [w_pieces[key]]
-            cur_moves = []
-            for action in w_pieces[key].actions:
-                for speed in w_pieces[key].speed:
-                    cur_moves.append((action[0]*speed, action[1]*speed))
-            
-            cur_action.append(cur_moves)
-            all_actions.append(cur_action)
-
-        for key in b_pieces:
-            cur_action = [b_pieces[key]]
-            cur_moves = []
-            for action in b_pieces[key].actions:
-                for speed in b_pieces[key].speed:
-                    cur_moves.append((action[0]*speed, action[1]*speed))
-            
-            cur_action.append(cur_moves)
-            all_actions.append(cur_action)
+        all_actions = {**white_player_actions, **black_player_actions}
 
         return all_actions

@@ -8,17 +8,17 @@ class RandomPlayer(Player):
 
     def play(self):
         legal_moves = self.game.board.get_legal_actions(self.game.cur_player)
-    
-        num_pieces = len(legal_moves)
 
-        rand_piece = np.random.randint(num_pieces)
-        num_moves = len(legal_moves[rand_piece][1])
+        all_moves = []
+        for piece in legal_moves:
+            for action in legal_moves[piece]:
+                all_moves.append([piece, action])
+    
+        num_moves = len(all_moves)
 
         rand_move = np.random.randint(num_moves)
 
-        move = (legal_moves[rand_piece][0], legal_moves[rand_piece][1][rand_move])
-
-        return move
+        return all_moves[rand_move]
     
     def promote_pawn(self):
         pieces_list = self.game.board.promote_pawn()

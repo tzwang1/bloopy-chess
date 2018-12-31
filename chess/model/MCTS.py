@@ -1,4 +1,5 @@
 import numpy as np
+import math
 EPS = 1e-8
 
 class MCTS(object):
@@ -14,9 +15,10 @@ class MCTS(object):
         self.Es = {}        # stores game.get_game_ended ended for board s
         self.Vs = {}        # stores game.board.get_legal_actions for board s
 
-        #self.all_actions = sorted(game.board.get_all_actions())
-        self.all_actions = game.board.get_all_actions()
-        self.action_size = len(self.all_actions)
+        self.white_actions = game.board.get_player_actions(1)
+        self.black_actions = game.board.get_player_actions(-1)
+        
+        self.action_size = len(self.white_actions)
     
     def get_action_prob(self, game, temp=1):
         """
@@ -42,7 +44,6 @@ class MCTS(object):
         counts = [x**(1./temp) for x in counts]
         probs = [x/float(sum(counts)) for x in counts]
         return probs
-
     
     def search(self, game):
         """
@@ -79,9 +80,18 @@ class MCTS(object):
             legal_actions = game.board.get_legal_actions(game.cur_player) #TODO: verify if this method of getting valid moves is correct
             valids = []
 
-            for piece in self.all_actions:
-                for actions in piece[1]:
-                    if action in legal_actions:
+            if game.cur_player == 1:
+                all_actions = self.white_actions
+            else:
+                all_actions = self.black_actions
+
+            for piece in all_actions:
+                if piece not in legal_actions:
+                    continue
+                
+                # import pdb; pdb.set_trace()
+                for action in all_actions[piece]:
+                    if action in legal_actions[piece]:
                         valids.append(1)
                     else:
                         valids.append(0)
