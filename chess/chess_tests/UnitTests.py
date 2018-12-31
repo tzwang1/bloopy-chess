@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import pytest
 sys.path.append('..')
 import ChessLogic as logic
 import ChessGame as game

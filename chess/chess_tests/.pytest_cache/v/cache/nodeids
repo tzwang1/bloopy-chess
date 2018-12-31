@@ -1,0 +1,18 @@
+[
+  "UnitTests.py::test_chess_pieces",
+  "UnitTests.py::test_chess_logic",
+  "UnitTests.py::test_execute_action",
+  "UnitTests.py::test_switch_orientation",
+  "UnitTests.py::test_check_legal",
+  "UnitTests.py::test_check_legal_Pawn",
+  "UnitTests.py::test_check_legal_King",
+  "UnitTests.py::test_king_in_check",
+  "UnitTests.py::test_king_in_checkmate",
+  "UnitTests.py::test_stalemate",
+  "UnitTests.py::test_promote_pawn",
+  "UnitTests.py::test_king_can_castle",
+  "UnitTests.py::test_chess_game",
+  "UnitTests.py::test_get_next_state",
+  "UnitTests.py::test_convert_to_nums",
+  "UnitTests.py::test_random_player"
+]
