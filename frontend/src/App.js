@@ -164,7 +164,7 @@ class App extends Component {
                 }
               })
               .then(Utilities.handleErrors)
-              .then(response =>  response.json())
+              .then(response => response.json())
               .then(data => {
                 console.log("Data: ", data);
                 if(data === "Game Over") {
