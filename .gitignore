@@ -15,6 +15,7 @@ frontend/build
 # chess
 chess/__pycache__
 chess/model/__pycache__
+chess/chess_tests/__pycache__
 
 
 
