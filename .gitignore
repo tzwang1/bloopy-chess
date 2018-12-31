@@ -1,11 +1,21 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# dependencies
+# Dependencies
+
+# backend
 backend/node_modules
 backend/server/chess/__pycache__
 backend/server/chess/model/__pycache__
-frontend/node_modules
 backend/server/chess/*.pyc
+
+# frontend
+frontend/node_modules
+frontend/build
+
+# chess
+chess/__pycache__
+chess/model/__pycache__
+
 
 
 # testing
