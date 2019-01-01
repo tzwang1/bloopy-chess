@@ -13,5 +13,5 @@ matrix:
         - pip install -r requirements.txt
       # command to run tests
       script:
-        - pytest -q test_wallet.py
+        - pytest -q UnitTests.py
          
